@@ -18,8 +18,8 @@ How to use
 
 1. Define a container for results to be put in::
 
-    <div id="#github-activity">
-    </div>
+    <ul id="#github-activity">
+    </ul>
 
 2. Include underscore, jQuery and github_activity.js::
 
@@ -27,7 +27,7 @@ How to use
     <script src="/static/js/underscore-min.js"></script>
     <script src="/static/js/github_activity.js"></script>
 
-3. Call ``GitHubActivity.show_activity(username, selector)`` to render
+3. Call ``GitHubActivity.show_activity(username, selector);`` to render
    activity::
 
     <script type="text/javascript" charset="utf-8">
@@ -42,10 +42,29 @@ How to use
                                         '#github-activity',
                                         '#my-template');
 
-Where ``'#my-template' is a selector for your provided template.  Look
+Where ``'#my-template'`` is a selector for your provided template.  Look
 at the output of::
 
 https://github.com/your_username.json
 
 to get an idea of the fields you can use in the template.
+
+The standard template is like this::
+
+    <script type="text/template" id="#my-template">
+        <li>
+          <a href="https://github.com/<%= actor %>"><%= actor %></a>
+            pushed to 
+            <a href="<%= repository.url %>"><%= repository.name %></a> on 
+            <% print(repository.pushed_at.substring(0, 10)); %>.
+            <ul>
+              <% _.each(payload.shas, function(sha) { %>
+                    <li>
+                      <%= sha[0].substring(0,6) %>
+                      <%= sha[2] %>.
+                    </li>
+              <% }); %>
+            </ul>
+        </li>
+    </script>
 

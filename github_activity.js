@@ -20,7 +20,7 @@ var GithubActivity = (function($, _) {
                     <% print(repository.pushed_at.substring(0, 10)); %>. \
             <ul><% _.each(payload.shas, function(sha) { %> \
                 <li><%= sha[0].substring(0,6) %> \
-                <%= sha[2] %>.<% }); %></ul>\
+                <%= sha[2] %>.</li><% }); %></ul>\
             </li>';
                 
 
