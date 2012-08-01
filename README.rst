@@ -68,7 +68,8 @@ The standard template is like this::
         </li>
     </script>
 
-5. Fork and Enjoy
+Fork and Enjoy
+--------------
 
 Feel free to fork and modify as you will or raise issues for changes.
 
