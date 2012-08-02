@@ -54,17 +54,22 @@ The standard template is like this::
     <script type="text/template" id="#my-template">
         <li>
           <a href="https://github.com/<%= actor %>"><%= actor %></a>
-            pushed to 
-            <a href="<%= repository.url %>"><%= repository.name %></a> on 
-            <% print(repository.pushed_at.substring(0, 10)); %>.
-            <ul>
-              <% _.each(payload.shas, function(sha) { %>
-                    <li>
-                      <%= sha[0].substring(0,6) %>
-                      <%= sha[2] %>.
-                    </li>
-              <% }); %>
-            </ul>
+          <% if (type == "PushEvent") { %> 
+                pushed to 
+                <a href="<%= repository.url %>"><%= repository.name %></a> on 
+                <% print(repository.pushed_at.substring(0, 10)); %>.
+                <ul>
+                  <% _.each(payload.shas, function(sha) { %>
+                        <li>
+                          <%= sha[0].substring(0,6) %>
+                          <%= sha[2] %>.
+                        </li>
+                  <% }); %>
+                </ul>
+                <% } else if (type == "GistEvent") { %> 
+                     <%= payload.action %>d gist: <a href="<%= payload.url %>">\
+                     <%= payload.desc %></a>.\
+                <% } %>\
         </li>
     </script>
 

@@ -13,16 +13,20 @@ var GithubActivity = (function($, _) {
     var 
         self = {},
         gh = 'http://github.com/',
-        default_template = '<li> \
+         default_template = '<li> \
             <a href="https://github.com/<%= actor %>"><%= actor %></a> \
+            <% if (type == "PushEvent") { %> \
             pushed to <a href="<%= repository.url %>"> \
                 <%= repository.name %></a> on \
                     <% print(repository.pushed_at.substring(0, 10)); %>. \
             <ul><% _.each(payload.shas, function(sha) { %> \
                 <li><%= sha[0].substring(0,6) %> \
-                <%= sha[2] %>.</li><% }); %></ul>\
-            </li>';
-                
+                <%= sha[2] %>.<% }); %></ul>\
+            <% } else if (type == "GistEvent") { %> \
+            <%= payload.action %>d gist: <a href="<%= payload.url %>">\
+            <%= payload.desc %></a>.\
+            <% } %>\
+            </li>';               
 
     /**
      * Fill in activity into selector from public events for username,
