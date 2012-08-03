@@ -73,6 +73,15 @@ The standard template is like this::
         </li>
     </script>
 
+Event type is used to select the text displayed, and there is currently
+support for PushEvents and GistEvents. Extras can be added to the template
+ as needed.
+
+To Do Next
+----------
+
+There should be a way to limit the length of displayed results as an option.
+
 Fork and Enjoy
 --------------
 
