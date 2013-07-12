@@ -27,12 +27,12 @@ How to use
     <script src="/static/js/underscore-min.js"></script>
     <script src="/static/js/github_activity.js"></script>
 
-3. Call ``GitHubActivity.show_activity(username, selector);`` to render
+3. Call ``GitHubActivity.show_activity(username, selector, limit);`` to render
    activity::
 
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
-            GithubActivity.show_activity('your_userid', '#github-activity');
+            GithubActivity.show_activity('your_userid', '#github-activity', 'itemslimit');
         });
     </script>
 
@@ -40,6 +40,7 @@ How to use
 
         GithubActivity.show_activity('your_userid', 
                                         '#github-activity',
+					'limit',
                                         '#my-template');
 
 Where ``'#my-template'`` is a selector for your provided template.  Look
