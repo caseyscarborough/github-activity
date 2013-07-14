@@ -3,6 +3,8 @@
  *
  * Graeme Sutherland, July 2012.
  *
+ * Modified by Brett Bohnenkamper, July 2013
+ *
  * Uses .json activity from github to show public commits.
  * Requires jQuery and underscore.js
  *
@@ -32,14 +34,16 @@ var GithubActivity = (function($, _) {
      * Fill in activity into selector from public events for username,
      * with optional template selector tmpl_selector.
      */
-    self.show_activity = function (username, selector, tmpl_selector) {
+    self.show_activity = function (username, selector, items, tmpl_selector) {
         var 
             url = 'https://github.com/' + username + '.json?callback=?',
             template = $(tmpl_selector).html() || default_template,
+	    limit = items || '5',
             compiled = _.template(template);
+	    limit++;
         
         $.getJSON(url, {}, function (data) {
-            $.each(data, function(index, commit) {
+            $.each(data.slice(0, limit), function(index, commit) {
                 $(selector).append(compiled(commit));
             });
         });
