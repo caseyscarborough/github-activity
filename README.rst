@@ -18,7 +18,7 @@ How to use
 
 1. Define a container for results to be put in::
 
-    <ul id="#github-activity">
+    <ul id="github-activity">
     </ul>
 
 2. Include underscore, jQuery and github_activity.js::
