@@ -1,0 +1,63 @@
+<html>
+<head>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
+  <script src="github_activity.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+      username = getURLParameter('username')
+      limit = getURLParameter('limit')
+      GithubActivity.show_activity(username, '#github-activity', limit);
+    });
+  </script>
+  <style>
+  html, body {
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    font-family: Consolas;
+    margin: 0;
+    padding: 0;
+  }
+
+  .activity {
+    clear: both;
+    padding: 10px;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+  }
+
+  ul {
+    list-style-type: none;
+  }
+
+  .gravatar {
+    float: left;
+    clear: both;
+    margin: 0 10px 10px 0;
+  }
+
+  .gravatar img {
+    padding: 2px;
+    border: 1px solid #ddd;
+    box-shadow: 1px 1px 3px #bbb;
+  }
+
+  .information {
+    float: left;
+  }
+
+  .clear {
+    clear: both;
+  }
+
+  </style>
+</head>
+<body>
+  <div id="github-activity">
+  </div>
+</body>
+</html>
