@@ -24,19 +24,38 @@ var GithubActivity = (function($, _) {
       </div>\
       <div class="information">\
         <a href="https://github.com/<%= actor %>"><%= actor %></a>\
-        <% if (type == "PushEvent" || type == "DeleteEvent") { %>\
-          pushed to <a href="<%= repository.url %>"><%= repository.name %></a> \
-          <% print($.timeago(repository.pushed_at)); %>.<br />\
+        <% if (type == "PushEvent") { %>\
+          pushed to <a href="<%= repository.url %>/tree/<%= payload.ref.substr(11) %>"><%= payload.ref.substr(11) %></a> \
+          at <a href="<%= repository.url %>"><%= repository.name %></a>.<br />\
           <% _.each(payload.shas, function(sha) { %><br />\
-            <small><a href="<%= url %>"><%= sha[0].substring(0, 6) %></a></small><br />\
-            <small><%= sha[2] %></small></li><% }); %><br />\
-        <% } else if (type == "GistEvent") { %> \
-          <%= payload.action %>d gist: <a href="<%= payload.url %>">\
-          <%= payload.desc %></a>.\
+            <small><a href="<%= url %>"><%= sha[0].substring(0, 6) %></a></small> \
+            <small><%= sha[2] %></small></li><% }); %>\
         <% } else if (type == "CreateEvent") { %> \
           created branch <a href="<%= repository.url %>/tree/<%= payload.ref %>"> \
           <%= payload.ref %></a> at <a href="<%= repository.url %>"><%= repository.name %></a>. \
-        <% } %>\
+        <% } else if (type == "DeleteEvent") { %>\
+          deleted branch <a href="<%= repository.url %>/tree/<%= payload.ref %>"> \
+          <%= payload.ref %></a> at <a href="<%= repository.url %>"><%= repository.name %></a>.\
+        <% } else if (type == "ForkEvent") { %>\
+          forked <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a> to \
+          <a href="<%= url %>"><%= actor %>/<%= repository.name %></a>. \
+        <% } else if (type == "PullRequestEvent") { %>\
+          merged pull request <a href="<%= payload.pull_request.html_url %>">\
+            <%= payload.pull_request.base.repo.full_name %>#<%= payload.pull_request.number %></a>.<br /><br />\
+            <small><%= payload.pull_request.title %></small>\
+        <% } else if (type == "IssueCommentEvent") { %>\
+          <a href="<%= url %>">commented</a> regarding <a href="<%= repository.url %>">\
+            <%= actor %>/<%= repository.name %>.</a>\
+        <% } else if (type == "WatchEvent") { %>\
+          starred <a href="<%= url %>"><%= repository.owner %>/<%= repository.name %></a>.\
+        <% } else if (type == "MemberEvent") { %>\
+          added <a href="<%= payload.member.html_url %>"><%= payload.member.login %></a> to \
+          <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a>.\
+        <% } else if (type == "GistEvent") { %>\
+          <%= payload.action %>d gist: <a href="<%= payload.url %>">\
+          <%= payload.desc %></a>.\
+        <% } %><br />\
+        <span class="muted"><small><% print($.timeago(created_at)); %></span></small><br />\
       </div><div class="clear"></div>\
     </div>';
 /**

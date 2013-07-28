@@ -1,11 +1,11 @@
 github-activity
 ===============
 
-A JavaScript module to read and render a user's public github activity
+This repository is a JavaScript module to read and render a user's public GitHub activity
 as HTML.  
 
-This javascript reads the public activity returned by 
-``http://github.com/username.json`` as jsonp and renders it either to a
+This Javascript reads the public activity returned by 
+`http://github.com/username.json` as jsonp and renders it either to a
 default or given html template.
 
 Dependencies
@@ -17,8 +17,10 @@ The following are dependencies for the project, but are included using cdnjs.
 * underscore.js
 * timeago.js
 
-How to Use
-----------
+Using the Library
+-----------------
+
+### Setting up the page
 
 Define a container for results to be put in:
 
@@ -36,64 +38,79 @@ Include underscore.js, timeago.js, jQuery and github_activity.js:
 <script src="github_activity.js"></script>
 ```
 
-Call `GitHubActivity.show_activity(username, selector, limit);` to render activity:
+### Calling the show_activity method
+
+Call `GitHubActivity.show_activity(username, selector, limit);` to render activity.
+You can do this one of two ways. The first is explicitly passing in the username and limit.
 
 ```html
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function() {
-        GithubActivity.show_activity('username', '#github-activity', 'itemslimit');
+        GithubActivity.show_activity('username', '#github-activity', 'limit');
     });
 </script>
 ```
 
-Optionally, you can provide your own template html like this:
-
-```javascript
-GithubActivity.show_activity('username', 
-                             '#github-activity',
-                             'limit',
-                             '#my-template');
-```
-
-Where `'#my-template'` is a selector for your provided template.  Look
-at the output of::
-
-https://github.com/your_username.json
-
-to get an idea of the fields you can use in the template.
-
-The standard template is like this:
+The second way is by passing them in through the URL string like using a request to your page like:
+`http://example.com/github-activity/?username=USERNAME&limit=LIMIT`.
 
 ```html
-<script type="text/template" id="#my-template">
-  <li>
-    <a href="https://github.com/<%= actor %>"><%= actor %></a>
-    <% if (type == "PushEvent") { %> 
-      pushed to <a href="<%= repository.url %>"><%= repository.name %></a> on 
-      <% print(repository.pushed_at.substring(0, 10)); %>.
-      <ul>
-        <% _.each(payload.shas, function(sha) { %>
-          <li>
-            <%= sha[0].substring(0,6) %>
-            <%= sha[2] %>.
-          </li>
-        <% }); %>
-      </ul>
-      <% } else if (type == "GistEvent") { %> 
-         <%= payload.action %>d gist: <a href="<%= payload.url %>">\
-         <%= payload.desc %></a>.\
-      <% } %>\
-  </li>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        // Get the parameters from the URL string
+        username = getURLParameter('username');
+        limit = getURLParameter('limit');
+
+        GithubActivity.show_activity(username, '#github-activity', limit);
+    });
 </script>
 ```
 
-Event type is used to select the text displayed, and there is currently
-support for PushEvents and GistEvents. Extras can be added to the template
-as needed.
+### Specifying a template (optional)
+
+Optionally, you can provide your own template html like this:
+
+```javascript
+GithubActivity.show_activity('username', '#github-activity', 'limit', '#my-template');
+```
+
+Where `'#my-template'` is a selector for your provided template.  Look
+at the output of https://github.com/your_username.json to get an idea of the fields you can use in the template.
+
+The standard template uses the following format:
+
+```erb
+<div class="activity">
+  
+  <div class="gravatar">
+    <a href="https://github.com/<%= actor %>">
+      <img src="http://gravatar.com/avatar/<%= actor_attributes.gravatar_id %>" />
+    </a>
+  </div>
+  
+  <div class="information">
+    <a href="https://github.com/<%= actor %>"><%= actor %></a>
+    
+    <% if (type == "PushEvent") { %>
+      pushed to <a href="<%= repository.url %>"><%= repository.name %></a>.<br />
+      <% _.each(payload.shas, function(sha) { %><br />
+        <small><a href="<%= url %>"><%= sha[0].substring(0, 6) %></a></small> 
+        <small><%= sha[2] %></small></li><% }); %>
+    
+    <% } else if (type == "CreateEvent") { %> 
+      created branch <a href="<%= repository.url %>/tree/<%= payload.ref %>"> 
+      <%= payload.ref %></a> at <a href="<%= repository.url %>"><%= repository.name %></a>. 
+    <% } %><br /><br />
+    
+    <span class="muted"><small><% print($.timeago(created_at)); %></span></small><br />
+  </div>
+
+  <div class="clear"></div>
+</div>
+```
 
 To Do
 -----
-* Add support for deletes, forks, stars, etc.
 
 
 Fork and Enjoy
