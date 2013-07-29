@@ -1,24 +1,40 @@
-github-activity
-===============
+# GitHub Activity Stream Plugin
 
 This repository is a JavaScript module to read and render a user's public GitHub activity
-as HTML.  
+as HTML. 
 
 This Javascript reads the public activity returned by 
 `http://github.com/username.json` as jsonp and renders it either to a
 default or given html template.
 
-Dependencies
-------------
+It also includes a widget for you to embed on your site. To see a demo of the widget, click
+[here](http://blog.caseyscarborough.com/activity/).
+
+## Widget Usage
+
+If you'd just like to use the built in widget on your site to show your GitHub activity stream, embed the following HTML
+into your webpage, filling in your username and limit where necessary:
+
+```html
+<iframe src="http://caseyscarborough.github.com/github-activity/?username=USERNAME&limit=20"
+  allowtransparency="true" frameborder="0" width="100%" height="400px"></iframe>
+```
+
+Also be sure to change the values for the width and height if you need to. This will render the widget
+into your page.
+
+## Using the github-activity.js Library
+
+If you'd like to customize the output of the activity stream, or to contribute, you'll
+want to use the following steps.
+
+### Dependencies
 
 The following are dependencies for the project, but are included using cdnjs.
 
 * jQuery
 * underscore.js
 * timeago.js
-
-Using the Library
------------------
 
 ### Setting up the page
 
@@ -109,13 +125,15 @@ The standard template uses the following format:
 </div>
 ```
 
-To Do
------
+## To Do
 
 
-Fork and Enjoy
---------------
+## Fork and Enjoy
 
-Feel free to fork and modify as you will or raise issues for changes.
+Please feel free to contribute to the application by following the steps below:
 
-
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
