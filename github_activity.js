@@ -40,17 +40,24 @@ var GithubActivity = (function($, _) {
           forked <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a> to \
           <a href="<%= url %>"><%= actor %>/<%= repository.name %></a>. \
         <% } else if (type == "PullRequestEvent") { %>\
-          merged pull request <a href="<%= payload.pull_request.html_url %>">\
+          <%= payload.action %> pull request <a href="<%= payload.pull_request.html_url %>">\
             <%= payload.pull_request.base.repo.full_name %>#<%= payload.pull_request.number %></a>.<br /><br />\
             <small><%= payload.pull_request.title %></small>\
+        <% } else if (type == "PullRequestReviewCommentEvent") { %>\
+          commented on pull request for <a href="<%= url %>"><%= repository.owner %>/<%= repository.name %></a>.<br />\
+          <small><%= payload.comment.body %></small>\
         <% } else if (type == "IssueCommentEvent") { %>\
           <a href="<%= url %>">commented</a> regarding <a href="<%= repository.url %>">\
             <%= actor %>/<%= repository.name %>.</a>\
         <% } else if (type == "WatchEvent") { %>\
           starred <a href="<%= url %>"><%= repository.owner %>/<%= repository.name %></a>.\
+        <% } else if (type == "FollowEvent") { %>\
+          started following <a href="<%= url %>"><%= payload.target.login %></a>.\
         <% } else if (type == "MemberEvent") { %>\
           added <a href="<%= payload.member.html_url %>"><%= payload.member.login %></a> to \
           <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a>.\
+        <% } else if (type == "GollumEvent") { %>\
+          <%= payload.pages[0].action %> the <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a> wiki.\
         <% } else if (type == "GistEvent") { %>\
           <%= payload.action %>d gist: <a href="<%= payload.url %>">\
           <%= payload.desc %></a>.\
