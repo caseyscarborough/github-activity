@@ -61,6 +61,8 @@ var GithubActivity = (function($, _) {
         <% } else if (type == "GistEvent") { %>\
           <%= payload.action %>d gist: <a href="<%= payload.url %>">\
           <%= payload.desc %></a>.\
+        <% } else { %>\
+          interacted with  <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a>.\
         <% } %><br />\
         <span class="muted"><small><% print($.timeago(created_at)); %></span></small><br />\
       </div><div class="clear"></div>\
