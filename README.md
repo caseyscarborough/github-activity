@@ -1,27 +1,19 @@
-# GitHub Activity Stream Plugin
+# GitHub Activity Stream Widget
 
-This repository is a JavaScript module to read and render a user's public GitHub activity
-as HTML. 
+This repository is a JavaScript module that reads and renders a user's public GitHub activity as embeddable HTML. It includes the `github-activity.js` library, as well as an example usage page, `index.html`.
 
-This Javascript reads the public activity returned by 
-`http://github.com/username.json` as jsonp and renders it either to a
-default or given html template.
+To see a demo of the widget, click [here](http://blog.caseyscarborough.com/activity/).
 
-It also includes a widget for you to embed on your site. To see a demo of the widget, click
-[here](http://blog.caseyscarborough.com/activity/).
+## Embedding the Widget
 
-## Widget Usage
-
-If you'd just like to use the built in widget on your site to show your GitHub activity stream, embed the following HTML
-into your webpage, filling in your username and limit where necessary:
+If you'd just like to use the built in widget on your site to show your GitHub activity stream, embed the following HTML into your webpage, filling in your username and limit where necessary:
 
 ```html
 <iframe src="http://caseyscarborough.github.com/github-activity/?username=USERNAME&limit=20"
   allowtransparency="true" frameborder="0" width="100%" height="400px"></iframe>
 ```
 
-Also be sure to change the values for the width and height if you need to. This will render the widget
-into your page.
+Also be sure to change the values for the width and height if you need to. This will render the widget into your page.
 
 ## Using the github-activity.js Library
 
@@ -36,27 +28,29 @@ The following are dependencies for the project, but are included using cdnjs.
 * underscore.js
 * timeago.js
 
-### Setting up the page
+### Setting Up the Page
 
-Define a container for results to be put in:
+Include underscore.js, timeago.js, jQuery and github_activity.js in the head of your page:
+
+```html
+<head>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
+  <script src="github-activity.js"></script>
+</head>
+```
+
+Define a container for results to be put into:
 
 ```html
 <div id="github-activity">
 </div>
 ```
 
-Include underscore.js, timeago.js, jQuery and github_activity.js:
+### Calling the show_activity Method
 
-```html
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
-<script src="github_activity.js"></script>
-```
-
-### Calling the show_activity method
-
-Call `GitHubActivity.show_activity(username, selector, limit);` to render activity.
+Call `GithubActivity.show_activity(username, selector, limit);` to render activity.
 You can do this one of two ways. The first is explicitly passing in the username and limit.
 
 ```html
@@ -67,7 +61,7 @@ You can do this one of two ways. The first is explicitly passing in the username
 </script>
 ```
 
-The second way is by passing them in through the URL string like using a request to your page like:
+The second way, which is used by the widget, is by passing them in through the URL string using a request to your page like:
 `http://example.com/github-activity/?username=USERNAME&limit=LIMIT`.
 
 ```html
@@ -76,57 +70,22 @@ The second way is by passing them in through the URL string like using a request
         // Get the parameters from the URL string
         username = getURLParameter('username');
         limit = getURLParameter('limit');
-
         GithubActivity.show_activity(username, '#github-activity', limit);
     });
 </script>
 ```
 
-### Specifying a template (optional)
-
-Optionally, you can provide your own template html like this:
-
-```javascript
-GithubActivity.show_activity('username', '#github-activity', 'limit', '#my-template');
-```
-
-Where `'#my-template'` is a selector for your provided template.  Look
-at the output of https://github.com/your_username.json to get an idea of the fields you can use in the template.
-
-The standard template uses the following format:
-
-```erb
-<div class="activity">
-  
-  <div class="gravatar">
-    <a href="https://github.com/<%= actor %>">
-      <img src="http://gravatar.com/avatar/<%= actor_attributes.gravatar_id %>" />
-    </a>
-  </div>
-  
-  <div class="information">
-    <a href="https://github.com/<%= actor %>"><%= actor %></a>
-    
-    <% if (type == "PushEvent") { %>
-      pushed to <a href="<%= repository.url %>"><%= repository.name %></a>.<br />
-      <% _.each(payload.shas, function(sha) { %><br />
-        <small><a href="<%= url %>"><%= sha[0].substring(0, 6) %></a></small> 
-        <small><%= sha[2] %></small></li><% }); %>
-    
-    <% } else if (type == "CreateEvent") { %> 
-      created branch <a href="<%= repository.url %>/tree/<%= payload.ref %>"> 
-      <%= payload.ref %></a> at <a href="<%= repository.url %>"><%= repository.name %></a>. 
-    <% } %><br /><br />
-    
-    <span class="muted"><small><% print($.timeago(created_at)); %></span></small><br />
-  </div>
-
-  <div class="clear"></div>
-</div>
-```
-
 ## To Do
 
+* Add support for more event types.
+
+## Contributors
+
+* [Casey Scarborough](https://github.com/caseyscarborough)
+* [Graeme Sutherland](https://github.com/grasuth)
+* [Brett Bohnenkamper](https://github.com/KittyKatt)
+
+Click [here](https://github.com/caseyscarborough/github-activity/commits/master) to view the full list of commits and contributions.
 
 ## Fork and Enjoy
 
