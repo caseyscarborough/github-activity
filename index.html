@@ -18,11 +18,19 @@
   }
 
   body {
-    font-family: Consolas;
+    font-family: Helvetica, arial, freesans, clean, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: bold;
     margin: 0;
     padding: 0;
   }
 
+  small {
+    font-size: 13px;
+    font-weight: normal;
+    color: #666;
+  }
   a {
     color: #4183c4;
     font-weight: bold;
@@ -41,6 +49,8 @@
 
   ul {
     list-style-type: none;
+    padding: 0;
+    margin: 0;
   }
 
   .gravatar {
@@ -48,18 +58,29 @@
     clear: both;
     margin: 0 10px 10px 0;
     display: inline;
+    vertical-align: middle;
+  }
+
+  .gravatar-small {
+    height: 18px;
+    border-radius: 2px;
+    vertical-align: middle;
   }
 
   .gravatar img {
-    padding: 2px;
-    border: 1px solid #ddd;
-    box-shadow: 1px 1px 3px #bbb;
+    height: 30px;
+    border-radius: 3px;
   }
 
   .information {
-    width: 70%;
+    width: 90%;
     float: left;
     display: inline-block;
+  }
+
+  .sha {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-weight: normal;
   }
 
   .muted {
