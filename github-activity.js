@@ -313,23 +313,31 @@ var GithubActivity = (function($, _) {
       limit = items || '5',
       compiled = _.template(template);
 
-    $.getJSON(url, {}, function(data) {
-      $(selector).append('\
-        <div class="header">\
-          <div class="gravatar">\
-            <a href="https://github.com/' + data[0]["actor"] + '">' + gravatarById(data[0]["actor_attributes"]["gravatar_id"], "gravatar-large") + '</a>\
-          </div>\
-          <div class="github-icon"><i class="icon-github icon-large"></i></div>\
-          <div class="user-info">\
-            <a href="https://github.com/' + data[0]["actor"] + '">' + data[0]["actor_attributes"]["name"] + '</a>\
-            <p>' + data[0]["actor"] + '</p>\
-          </div><div class="clear"></div>\
-        </div><div class="push"></div>\
-      ');
-      $.each(data.slice(0, limit), function(index, commit) {
-        $(selector).append(compiled(commit));
-      });
+    $.ajax({
+      url: url, 
+      data: {}, 
+      dataType: 'json',
+      success: function(data) {
+        $(selector).append('\
+          <div class="header">\
+            <div class="gravatar">\
+              <a href="https://github.com/' + data[0]["actor"] + '">' + gravatarById(data[0]["actor_attributes"]["gravatar_id"], "gravatar-large") + '</a>\
+            </div>\
+            <div class="github-icon"><i class="icon-github icon-large"></i></div>\
+            <div class="user-info">\
+              <a href="https://github.com/' + data[0]["actor"] + '">' + data[0]["actor_attributes"]["name"] + '</a>\
+              <p>' + data[0]["actor"] + '</p>\
+            </div><div class="clear"></div>\
+          </div><div class="push"></div>\
+        ');
+        $.each(data.slice(0, limit), function(index, commit) {
+          $(selector).append(compiled(commit));
+        });
+      }
     });
+    
+    $('#loading').fadeOut(1500);
+    
   };
   return self;
 }(jQuery, _));
