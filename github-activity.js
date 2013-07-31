@@ -196,8 +196,40 @@ if (md5('hello') != '5d41402abc4b2a76b9719d911017c592') {
 
 // END MD5 FUNCTIONS
 
-function gravatarFor(email, cssClass) {
-  return '<img src="http://gravatar.com/avatar/' + md5(email) + '" class="' + cssClass + '" />';
+// This function returns the Gravatar for a particular users email
+function gravatarByEmail(email, cssClass) {
+  return gravatarById(md5(email), cssClass);
+}
+
+function gravatarById(hash, cssClass) {
+  return '<img src="http://gravatar.com/avatar/' + hash + '?s=200" class="' + cssClass + '" />';
+}
+
+// This function returns the correct icon for a specific type of GitHub activity
+function iconFor(type) {
+  if (type === "PushEvent") {
+    return "icon-upload";
+  } else if (type === "CommentEvent" || type === "PullRequestReviewCommentEvent" || type === "IssueCommentEvent") {
+    return "icon-comments";
+  } else if (type === "ForkEvent") {
+    return "icon-code-fork";
+  } else if (type === "CreateEvent" || type === "MemberEvent"){
+    return "icon-plus";
+  } else if (type === "DeleteEvent") {
+    return "icon-ban-circle";
+  } else if (type === "WatchEvent") {
+    return "icon-star";
+  } else if (type === "FollowEvent") {
+    return "icon-male";
+  } else if (type === "GistEvent") {
+    return "icon-code";
+  } else if (type === "PullRequestEvent") {
+    return "icon-download";
+  } else if (type === "GollumEvent") {
+    return "icon-info";
+  } else {
+    return "icon-github-alt";
+  }
 }
 
 /**
@@ -214,12 +246,15 @@ var GithubActivity = (function($, _) {
   var
     self = {},
     gh = 'http://github.com/',
+    header = '\
+    <div class="header">\
+      <a href="h<%= gravatarFor(actor<br />\
+    </div>\
+    ';
     default_template = '\
     <div class="activity">\
-      <div class="gravatar">\
-        <a href="https://github.com/<%= actor %>">\
-          <img src="http://gravatar.com/avatar/<%= actor_attributes.gravatar_id %>" />\
-        </a>\
+      <div class="activity-icon">\
+        <i class="<%= iconFor(type) %> icon-large"></i>\
       </div>\
       <div class="information">\
         <span class="muted"><small><% print($.timeago(created_at)); %></span></small><br />\
@@ -229,8 +264,8 @@ var GithubActivity = (function($, _) {
           at <a href="<%= repository.url %>"><%= repository.name %></a>.<br />\
           <ul>\
           <% _.each(payload.shas, function(sha) { %>\
-            <li><%= gravatarFor(sha[1], "gravatar-small") %> \
-            <small class="sha"><a href="<%= url %>"><%= sha[0].substring(0, 6) %></a></small> \
+            <li><%= gravatarByEmail(sha[1], "gravatar-small") %> \
+            <small class="sha"><a href="https://github.com/<%= actor %>/<%= repository.name %>/commit/<%= sha[0] %>"><%= sha[0].substring(0, 6) %></a></small> \
             <small><%= sha[2] %></small></li><% }); %>\
           </ul>\
         <% } else if (type == "CreateEvent") { %> \
@@ -274,10 +309,23 @@ var GithubActivity = (function($, _) {
     var 
       url = 'https://github.com/' + username + '.json?callback=?',
       template = $(tmpl_selector).html() || default_template,
+      header = 
       limit = items || '5',
       compiled = _.template(template);
 
     $.getJSON(url, {}, function(data) {
+      $(selector).append('\
+        <div class="header">\
+          <div class="gravatar">\
+            <a href="https://github.com/' + data[0]["actor"] + '">' + gravatarById(data[0]["actor_attributes"]["gravatar_id"], "gravatar-large") + '</a>\
+          </div>\
+          <div class="github-icon"><i class="icon-github icon-large"></i></div>\
+          <div class="user-info">\
+            <a href="https://github.com/' + data[0]["actor"] + '">' + data[0]["actor_attributes"]["name"] + '</a>\
+            <p>' + data[0]["actor"] + '</p>\
+          </div><div class="clear"></div>\
+        </div><div class="push"></div>\
+      ');
       $.each(data.slice(0, limit), function(index, commit) {
         $(selector).append(compiled(commit));
       });

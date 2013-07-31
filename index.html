@@ -3,6 +3,7 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" />
   <script src="github-activity.js"></script>
   <script type="text/javascript" charset="utf-8">
     $(document).ready(function() {
@@ -12,8 +13,9 @@
     });
   </script>
   <style>
+
   html, body {
-    width: 98%;
+    width: 100%;
     height: 100%;
   }
 
@@ -40,9 +42,80 @@
   a:hover {
     text-decoration: underline;
   }
+
+  .header {
+    padding: 10px;
+    vertical-align: middle;
+    border-bottom: 1px solid #ddd;
+    position: fixed;
+    width: 100%;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top,  #ffffff 0%, #f4f4f4 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f4f4f4)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #ffffff 0%,#f4f4f4 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #ffffff 0%,#f4f4f4 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f4f4f4 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #ffffff 0%,#f4f4f4 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f4f4f4',GradientType=0 ); /* IE6-9 */
+    box-shadow: 0px 0px 5px #ddd;
+  }
+
+  .push {
+    height: 109px;
+  }
+
+  .gravatar {
+    width: 80px;
+    float: right;
+    clear: both;
+    display: inline;
+    margin-right: 10px;
+    padding-right: 20px;
+  }
+
+  .gravatar-large {
+    padding: 5px;
+    width: 100%;
+    padding: 3px;
+    border: 1px solid #ddd;
+    box-shadow: 1px 1px 3px #ccc;
+  }
+
+  .user-info {
+    float: left;
+    display: inline-block;
+    font-size: 20px;
+    margin: 0 auto;
+    padding: 10px;
+    color: #495961;
+  }
+
+  .user-info a {
+    color: #495961;
+  }
+
+  .user-info a:hover {
+    color: #495961;
+    text-decoration: none;
+  }
+
+  .github-icon {
+    width: 30px;
+    float: left;
+    display: inline;
+    font-size: 30px;
+    color: #495961;
+    padding: 20px 0 0;
+  }
+  .user-info p {
+    padding: 0;
+    margin: 0;
+    font-weight: 100;
+  }
+
   .activity {
     clear: both;
-    padding: 10px;
+    padding: 10px 0;
     width: 100%;
     border-bottom: 1px solid #ddd;
   }
@@ -53,23 +126,21 @@
     margin: 0;
   }
 
-  .gravatar {
+  .activity-icon {
     float: left;
     clear: both;
-    margin: 0 10px 10px 0;
+    margin: 6px auto;
     display: inline;
-    vertical-align: middle;
+    color: #bbb; 
+    width: 35px;
+    text-align: center;
   }
 
   .gravatar-small {
     height: 18px;
     border-radius: 2px;
     vertical-align: middle;
-  }
-
-  .gravatar img {
-    height: 30px;
-    border-radius: 3px;
+    width: 18px;
   }
 
   .information {
