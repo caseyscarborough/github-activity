@@ -4,13 +4,17 @@ This repository is a JavaScript module that reads and renders a user's public Gi
 
 To see a demo of the widget, click [here](http://blog.caseyscarborough.com/activity/).
 
+To see how it will look for your account, or a particular user, click
+[here](http://caseyscarborough.github.com/github-activity/?username=caseyscarborough&limit=25)
+and update the username parameter in the URL string with your username.
+
 ## Embedding the Widget
 
 If you'd just like to use the built in widget on your site to show your GitHub activity stream, embed the following HTML into your webpage, filling in your username and limit where necessary:
 
 ```html
-<iframe src="http://caseyscarborough.github.com/github-activity/?username=USERNAME&limit=20"
-  allowtransparency="true" frameborder="0" width="100%" height="400px"></iframe>
+<iframe src="http://caseyscarborough.github.com/github-activity/?username=USERNAME&limit=LIMIT"
+  allowtransparency="true" frameborder="0" width="100%" height="400px" />
 ```
 
 Also be sure to change the values for the width and height if you need to. This will render the widget into your page.
@@ -22,18 +26,21 @@ want to use the following steps.
 
 ### Dependencies
 
-The following are dependencies for the project, but are included using cdnjs.
+The libraries are used in the project.
 
-* jQuery
-* underscore.js
-* timeago.js
+* [jQuery](http://jquery.com/)
+* [underscore.js](http://underscorejs.org/)
+* [timeago.js](http://timeago.yarp.com/)
+* [spin.js](http://fgnass.github.io/spin.js/)
+* [FontAwesome](http://fontawesome.io)
 
 ### Setting Up the Page
 
-Include underscore.js, timeago.js, jQuery and github_activity.js in the head of your page:
+Add includes and the github-activity.js library in the head of your page:
 
 ```html
 <head>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" />
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
