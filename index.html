@@ -6,11 +6,26 @@
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" />
   <script src="github-activity.js"></script>
   <script type="text/javascript" charset="utf-8">
+    var opts = { 
+      lines: 13, length: 10, width: 4, radius: 10, color: '#495961', speed: 0.8, top: '30%' 
+    };
+
+    $('#loading').hide().ajaxStart(function() {
+      $(this).show();
+    }).ajaxStop(function() {
+      $(this).hide();
+    });
+
     $(document).ready(function() {
+      var target = document.getElementById('loading');
+      var spinner = new Spinner(opts).spin(target);
+      
       username = getURLParameter('username')
       limit = getURLParameter('limit')
       GithubActivity.show_activity(username, '#github-activity', limit);
     });
+  </script>
+    
   </script>
   <style>
 
@@ -154,6 +169,12 @@
     font-weight: normal;
   }
 
+  #loading {
+    width: 30px;
+    height: 30px;
+    margin: auto;
+  }
+
   .muted {
     color: #666;
   }
@@ -166,6 +187,8 @@
 </head>
 <body>
   <div id="github-activity">
+  </div>
+  <div id="loading">
   </div>
 </body>
 </html>
