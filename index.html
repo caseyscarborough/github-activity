@@ -1,26 +1,10 @@
 <html>
 <head>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
+  <title>GitHub Activity Stream</title>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" />
+  <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
   <script src="github-activity.js"></script>
-  <script type="text/javascript" charset="utf-8">
-    var opts = { 
-      lines: 13, length: 10, width: 4, radius: 10, color: '#495961', speed: 0.8, top: '30%' 
-    };
-
-    $(document).ready(function() {
-      var target = document.getElementById('loading');
-      var spinner = new Spinner(opts).spin(target);
-
-      username = getURLParameter('username')
-      limit = getURLParameter('limit')
-      GithubActivity.show_activity(username, '#github-activity', limit);
-    });
-  </script>
   <style>
-
     html, body {
       width: 100%;
       height: 100%;
@@ -40,6 +24,7 @@
       font-weight: normal;
       color: #666;
     }
+
     a {
       color: #4183c4;
       font-weight: bold;
@@ -220,7 +205,6 @@
     .clear {
       clear: both;
     }
-
   </style>
 </head>
 <body>

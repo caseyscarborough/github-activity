@@ -1,86 +1,37 @@
 # GitHub Activity Stream Widget
 
-This repository is a JavaScript module that reads and renders a user's public GitHub activity as embeddable HTML. It includes the `github-activity.js` library, as well as an example usage page, `index.html`.
+This repository is an embeddable widget that displays a user's public activity on GitHub. It displays a user's username, name, photo, and a specified number of recent activity updates.
 
-To see a demo of the widget, click [here](http://blog.caseyscarborough.com/activity/).
+To see a demo of the widget, click [here](http://caseyscarborough.github.com/github-activity/?username=caseyscarborough&limit=30).
 
-To see how it will look for your account, or a particular user, click
-[here](http://caseyscarborough.github.com/github-activity/?username=caseyscarborough&limit=25)
-and update the username parameter in the URL string with your username.
+To see how it will look for another account, you can update the URL string with your username (or someone else's).
+
+Here is a sample screenshot of the widget:
+
+<p align="center">
+  <img src="https://caseyscarborough.github.com/github-activity/img/screenshot.png" title="GitHub Activity Stream for @matz" />
+</p>
 
 ## Embedding the Widget
 
-If you'd just like to use the built in widget on your site to show your GitHub activity stream, embed the following HTML into your webpage, filling in your username and limit where necessary:
+To embed the built in widget on your site to show your GitHub activity stream, add the following HTML into your webpage, filling in your username and limit where necessary.
 
+The **username** parameter is required to use the widget, but the **limit** parameter is not. If not specified, it will default to the latest 30 activity updates.
+
+**With Specific Limit**
 ```html
 <iframe src="http://caseyscarborough.github.com/github-activity/?username=USERNAME&limit=LIMIT"
   allowtransparency="true" frameborder="0" width="100%" height="400px" />
 ```
 
-Also be sure to change the values for the width and height if you need to. This will render the widget into your page.
-
-## Using the github-activity.js Library
-
-If you'd like to customize the output of the activity stream, or to contribute, you'll
-want to use the following steps.
-
-### Dependencies
-
-The libraries are used in the project.
-
-* [jQuery](http://jquery.com/)
-* [underscore.js](http://underscorejs.org/)
-* [timeago.js](http://timeago.yarp.com/)
-* [spin.js](http://fgnass.github.io/spin.js/)
-* [FontAwesome](http://fontawesome.io)
-
-### Setting Up the Page
-
-Add includes and the github-activity.js library in the head of your page:
-
+**Without Specific Limit**
 ```html
-<head>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
-  <script src="github-activity.js"></script>
-</head>
+<iframe src="http://caseyscarborough.github.com/github-activity/?username=USERNAME"
+  allowtransparency="true" frameborder="0" width="100%" height="400px" />
 ```
 
-Define a container for results to be put into:
+Also be sure to change the values for the width and height if you need to.
 
-```html
-<div id="github-activity">
-</div>
-```
-
-### Calling the show_activity Method
-
-Call `GithubActivity.show_activity(username, selector, limit);` to render activity.
-You can do this one of two ways. The first is explicitly passing in the username and limit.
-
-```html
-<script type="text/javascript" charset="utf-8">
-    $(document).ready(function() {
-        GithubActivity.show_activity('username', '#github-activity', 'limit');
-    });
-</script>
-```
-
-The second way, which is used by the widget, is by passing them in through the URL string using a request to your page like:
-`http://example.com/github-activity/?username=USERNAME&limit=LIMIT`.
-
-```html
-<script type="text/javascript" charset="utf-8">
-    $(document).ready(function() {
-        // Get the parameters from the URL string
-        username = getURLParameter('username');
-        limit = getURLParameter('limit');
-        GithubActivity.show_activity(username, '#github-activity', limit);
-    });
-</script>
-```
 
 ## To Do
 
@@ -93,6 +44,14 @@ The second way, which is used by the widget, is by passing them in through the U
 * [Brett Bohnenkamper](https://github.com/KittyKatt)
 
 Click [here](https://github.com/caseyscarborough/github-activity/commits/master) to view the full list of commits and contributions.
+
+The following libraries are used in the project.
+
+* [jQuery](http://jquery.com/)
+* [underscore.js](http://underscorejs.org/)
+* [timeago.js](http://timeago.yarp.com/)
+* [spin.js](http://fgnass.github.io/spin.js/)
+* [FontAwesome](http://fontawesome.io)
 
 ## Fork and Enjoy
 
