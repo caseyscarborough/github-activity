@@ -32,10 +32,21 @@ The **username** parameter is required to use the widget, but the **limit** para
 
 Also be sure to change the values for the width and height if you need to.
 
+### Error When Using SSL
+
+If you receive an untrusted error when using the widget on a site with an SSL certificate, you can remedy this by downloading the
+[most recent version](https://raw.github.com/caseyscarborough/github-activity/gh-pages/index.html) of the index.html file used for the
+widget and hosting a copy on your site in a folder named `github-activity`. You can then access it using an `iframe` in the same way as above:
+
+```html
+<iframe src="https://example.com/github-activity/?username=USERNAME"
+  allowtransparency="true" frameborder="0" width="100%" height="400px"></iframe>
+```
 
 ## To Do
 
 * Add support for more event types.
+* target="_blank" on all links
 
 ## Contributions and Acknowledgements
 
