@@ -20,6 +20,7 @@
     });
   </script>
   <style>
+
     html, body {
       width: 100%;
       height: 100%;
@@ -67,11 +68,11 @@
     }
 
     .push {
-      height: 109px;
+      height: 89px;
     }
 
     .gravatar {
-      width: 80px;
+      width: 60px;
       float: right;
       clear: both;
       display: inline;
@@ -80,7 +81,6 @@
     }
 
     .gravatar-large {
-      padding: 5px;
       width: 100%;
       padding: 3px;
       border: 1px solid #ddd;
@@ -92,8 +92,21 @@
       display: inline-block;
       font-size: 20px;
       margin: 0 auto;
-      padding: 16px 10px 10px;
+      padding: 6px 10px 5px;
       color: #495961;
+    }
+
+    .user-info p a {
+      font-weight: 100;
+    }
+
+    .without-name {
+      padding-top: 25px;
+      padding-left: 15px;
+    }
+
+    .without-name p a {
+      font-weight: bold;
     }
 
     .user-info a {
@@ -111,7 +124,7 @@
       display: inline;
       font-size: 36px;
       color: #495961;
-      padding: 20px 0 0;
+      padding: 10px 0 0;
     }
 
     .user-info p {
@@ -167,6 +180,39 @@
       margin: auto;
     }
 
+    #github-activity {
+      padding-bottom: 26px;
+    }
+
+    #footer {
+      padding: 5px;
+      border-top: 1px solid #ddd;
+      position: fixed;
+      bottom: 0px;
+      height: 16px;
+      width: 100%;
+      background: #ffffff; /* Old browsers */
+      background: -moz-linear-gradient(top,  #ffffff 0%, #f4f4f4 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f4f4f4)); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top,  #ffffff 0%,#f4f4f4 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top,  #ffffff 0%,#f4f4f4 100%); /* Opera 11.10+ */
+      background: -ms-linear-gradient(top,  #ffffff 0%,#f4f4f4 100%); /* IE10+ */
+      background: linear-gradient(to bottom,  #ffffff 0%,#f4f4f4 100%); /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f4f4f4',GradientType=0 ); /* IE6-9 */
+      box-shadow: 0px 0px 5px #ddd;
+    }
+
+    #footer a {
+      float: right;
+      color: #495961;
+      padding-right: 20px;
+      font-size: 13px;
+    }
+
+    #footer a:hover {
+      text-decoration: none;
+    }
+
     .muted {
       color: #666;
     }
@@ -178,9 +224,10 @@
   </style>
 </head>
 <body>
-  <div id="github-activity">
-  </div>
-  <div id="loading">
+  <div id="github-activity"></div>
+  <div id="loading"></div>
+  <div id="footer">
+    <a href="http://github.com/caseyscarborough/github-activity" target="_blank">GitHub Activity Stream</a>
   </div>
 </body>
 </html>

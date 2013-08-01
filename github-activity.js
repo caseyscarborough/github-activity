@@ -318,15 +318,23 @@ var GithubActivity = (function($, _) {
       data: {}, 
       dataType: 'json',
       success: function(data) {
+        var name = data[0]["actor_attributes"]["name"];
+        var cssClass = 'with-name';
+
+        if(name === undefined) { 
+          name = ''; 
+          cssClass='without-name'; 
+        }
+
         $(selector).append('\
           <div class="header">\
             <div class="gravatar">\
-              <a href="https://github.com/' + data[0]["actor"] + '">' + gravatarById(data[0]["actor_attributes"]["gravatar_id"], "gravatar-large") + '</a>\
+              <a href="https://github.com/' + data[0]["actor"] + '"  target="_blank">' + gravatarById(data[0]["actor_attributes"]["gravatar_id"], "gravatar-large") + '</a>\
             </div>\
             <div class="github-icon"><i class="icon-github icon-large"></i></div>\
-            <div class="user-info">\
-              <a href="https://github.com/' + data[0]["actor"] + '">' + data[0]["actor_attributes"]["name"] + '</a>\
-              <p>' + data[0]["actor"] + '</p>\
+            <div class="user-info ' + cssClass + '">\
+              <a href="https://github.com/' + data[0]["actor"] + '" target="_blank">' + name + '</a>\
+              <p><a href="https://github.com/' + data[0]["actor"] + '" target="_blank">' + data[0]["actor"] + '</a></p>\
             </div><div class="clear"></div>\
           </div><div class="push"></div>\
         ');
