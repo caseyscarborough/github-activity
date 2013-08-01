@@ -21,13 +21,13 @@ The **username** parameter is required to use the widget, but the **limit** para
 **With Specific Limit**
 ```html
 <iframe src="http://caseyscarborough.github.com/github-activity/?username=USERNAME&limit=LIMIT"
-  allowtransparency="true" frameborder="0" width="100%" height="400px" />
+  allowtransparency="true" frameborder="0" width="100%" height="400px"></iframe>
 ```
 
 **Without Specific Limit**
 ```html
 <iframe src="http://caseyscarborough.github.com/github-activity/?username=USERNAME"
-  allowtransparency="true" frameborder="0" width="100%" height="400px" />
+  allowtransparency="true" frameborder="0" width="100%" height="400px"></iframe>
 ```
 
 Also be sure to change the values for the width and height if you need to.
@@ -37,15 +37,18 @@ Also be sure to change the values for the width and height if you need to.
 
 * Add support for more event types.
 
-## Contributors
+## Contributions and Acknowledgements
 
-* [Casey Scarborough](https://github.com/caseyscarborough)
+This idea began by a project by [Graeme Sutherland](https://github.com/grasuth), which was a JS library to retrieve some basic data 
+from a user's GitHub account. I was looking for a decent GitHub activity feed at that time and couldn't find one to suit my needs at 
+the time, so I decided to build my own.
+
 * [Graeme Sutherland](https://github.com/grasuth)
 * [Brett Bohnenkamper](https://github.com/KittyKatt)
 
 Click [here](https://github.com/caseyscarborough/github-activity/commits/master) to view the full list of commits and contributions.
 
-The following libraries are used in the project.
+**The following libraries are used in the project:**
 
 * [jQuery](http://jquery.com/)
 * [underscore.js](http://underscorejs.org/)
