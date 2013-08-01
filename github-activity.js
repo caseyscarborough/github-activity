@@ -99,7 +99,7 @@ var GitHubActivity = (function($, _) {
           <ul>\
           <% _.each(payload.shas, function(sha) { %>\
             <li><%= gravatarByEmail(sha[1], "gravatar-small") %> \
-            <small class="sha"><a href="https://github.com/<%= actor %>/<%= repository.name %>/commit/<%= sha[0] %>"><%= sha[0].substring(0, 6) %></a></small> \
+            <small class="sha"><a href="https://github.com/<%= repository.owner %>/<%= repository.name %>/commit/<%= sha[0] %>"><%= sha[0].substring(0, 6) %></a></small> \
             <small><%= sha[2] %></small></li><% }); %>\
           </ul>\
         <% } else if (type == "CreateEvent") { %> \
