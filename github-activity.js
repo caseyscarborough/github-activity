@@ -82,11 +82,6 @@ var GitHubActivity = (function($, _) {
   var
     self = {},
     gh = 'http://github.com/',
-    header = '\
-    <div class="header">\
-      <a href="h<%= gravatarFor(actor<br />\
-    </div>\
-    ';
     default_template = '\
     <div class="activity">\
       <div class="activity-icon">\
@@ -94,53 +89,53 @@ var GitHubActivity = (function($, _) {
       </div>\
       <div class="information">\
         <span class="muted"><small><% print($.timeago(created_at)); %></span></small><br />\
-        <a href="https://github.com/<%= actor %>"><%= actor %></a>\
+        <a href="https://github.com/<%= actor %>" target="_blank"><%= actor %></a>\
         <% if (type == "PushEvent") { %>\
-          pushed to <a href="<%= repository.url %>/tree/<%= payload.ref.substr(11) %>"><%= payload.ref.substr(11) %></a> \
-          at <a href="<%= repository.url %>"><%= repository.name %></a>.<br />\
+          pushed to <a href="<%= repository.url %>/tree/<%= payload.ref.substr(11) %>" target="_blank"><%= payload.ref.substr(11) %></a> \
+          at <a href="<%= repository.url %>" target="_blank"><%= repository.name %></a>.<br />\
           <ul>\
           <% _.each(payload.shas, function(sha) { %>\
             <li><%= gravatarByEmail(sha[1], "gravatar-small") %> \
-            <small class="sha"><a href="https://github.com/<%= repository.owner %>/<%= repository.name %>/commit/<%= sha[0] %>"><%= sha[0].substring(0, 6) %></a></small> \
+            <small class="sha"><a href="https://github.com/<%= repository.owner %>/<%= repository.name %>/commit/<%= sha[0] %>" target="_blank"><%= sha[0].substring(0, 6) %></a></small> \
             <small><%= sha[2] %></small></li><% }); %>\
           </ul>\
         <% } else if (type == "CreateEvent") { %> \
-          created branch <a href="<%= repository.url %>/tree/<%= payload.ref %>"> \
-          <%= payload.ref %></a> at <a href="<%= repository.url %>"><%= repository.name %></a>. \
+          created branch <a href="<%= repository.url %>/tree/<%= payload.ref %>" target="_blank"> \
+          <%= payload.ref %></a> at <a href="<%= repository.url %>" target="_blank"><%= repository.name %></a>. \
         <% } else if (type == "DeleteEvent") { %>\
-          deleted branch <%= payload.ref %> at <a href="<%= repository.url %>"><%= repository.name %></a>.\
+          deleted branch <%= payload.ref %> at <a href="<%= repository.url %>" target="_blank"><%= repository.name %></a>.\
         <% } else if (type == "ForkEvent") { %>\
-          forked <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a> to \
-          <a href="<%= url %>"><%= actor %>/<%= repository.name %></a>. \
+          forked <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a> to \
+          <a href="<%= url %>" target="_blank"><%= actor %>/<%= repository.name %></a>. \
         <% } else if (type == "PullRequestEvent") { %>\
-          <%= payload.action %> pull request <a href="<%= payload.pull_request.html_url %>">\
+          <%= payload.action %> pull request <a href="<%= payload.pull_request.html_url %>" target="_blank">\
             <%= payload.pull_request.base.repo.full_name %>#<%= payload.pull_request.number %></a>.<br />\
             <small><%= payload.pull_request.title %></small>\
         <% } else if (type == "PullRequestReviewCommentEvent") { %>\
-          commented on pull request for <a href="<%= url %>"><%= repository.owner %>/<%= repository.name %></a>.<br />\
+          commented on pull request for <a href="<%= url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a>.<br />\
           <small><%= payload.comment.body %></small>\
         <% } else if (type == "IssuesEvent") { %>\
-          <%= payload.action %> issue <a href="<%= url %>"><%= repository.owner %>/<%= repository.name %>#<%= payload.number %></a>.\
+          <%= payload.action %> issue <a href="<%= url %>" target="_blank"><%= repository.owner %>/<%= repository.name %>#<%= payload.number %></a>.\
         <% } else if (type == "IssueCommentEvent") { %>\
-          <a href="<%= url %>">commented</a> regarding <a href="<%= repository.url %>">\
+          <a href="<%= url %>" target="_blank">commented</a> regarding <a href="<%= repository.url %>" target="_blank">\
             <%= actor %>/<%= repository.name %>.</a>\
         <% } else if (type == "CommitCommentEvent") { %>\
-          commented on commit <a href="https://github.com/<%= repository.owner %>/<%= repository.name %>/commit/<%= payload.commit %>">\
+          commented on commit <a href="https://github.com/<%= repository.owner %>/<%= repository.name %>/commit/<%= payload.commit %>" target="_blank">\
           <%= repository.owner %>/<%= repository.name %>@<%= payload.commit.substring(0, 10) %></a>.\
         <% } else if (type == "WatchEvent") { %>\
-          starred <a href="<%= url %>"><%= repository.owner %>/<%= repository.name %></a>.\
+          starred <a href="<%= url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a>.\
         <% } else if (type == "FollowEvent") { %>\
-          started following <a href="<%= url %>"><%= payload.target.login %></a>.\
+          started following <a href="<%= url %>" target="_blank"><%= payload.target.login %></a>.\
         <% } else if (type == "MemberEvent") { %>\
-          added <a href="<%= payload.member.html_url %>"><%= payload.member.login %></a> to \
-          <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a>.\
+          added <a href="<%= payload.member.html_url %>" target="_blank"><%= payload.member.login %></a> to \
+          <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a>.\
         <% } else if (type == "GollumEvent") { %>\
-          <%= payload.pages[0].action %> the <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a> wiki.\
+          <%= payload.pages[0].action %> the <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a> wiki.\
         <% } else if (type == "GistEvent") { %>\
-          <%= payload.action %>d gist: <a href="<%= payload.url %>">\
+          <%= payload.action %>d gist: <a href="<%= payload.url %>" target="_blank">\
           <%= payload.desc %></a>.\
         <% } else { %>\
-          interacted with  <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a>.\
+          interacted with  <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a>.\
         <% } %>\
       </div><div class="clear"></div>\
     </div>';
@@ -189,6 +184,3 @@ var GitHubActivity = (function($, _) {
   };
   return self;
 }(jQuery, _));
-
-
-
