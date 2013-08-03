@@ -57,6 +57,8 @@ function iconFor(type) {
     return "icon-comments";
   } else if (type === "ForkEvent") {
     return "icon-code-fork";
+  } else if (type === "PublicEvent") {
+    return "icon-globe";
   } else if (type === "IssuesEvent") {
     return "icon-check";
   } else if (type === "CreateEvent" || type === "MemberEvent"){
@@ -104,6 +106,8 @@ var GitHubActivity = (function($, _) {
           <%= payload.ref %></a> at <a href="<%= repository.url %>" target="_blank"><%= repository.name %></a>. \
         <% } else if (type == "DeleteEvent") { %>\
           deleted branch <%= payload.ref %> at <a href="<%= repository.url %>" target="_blank"><%= repository.name %></a>.\
+        <% } else if (type == "PublicEvent") { %>\
+          open sourced <a href="<%= url %>"><%= repository.owner %>/<%= repository.name %></a>.\
         <% } else if (type == "ForkEvent") { %>\
           forked <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a> to \
           <a href="<%= url %>" target="_blank"><%= actor %>/<%= repository.name %></a>. \
@@ -132,8 +136,8 @@ var GitHubActivity = (function($, _) {
         <% } else if (type == "GollumEvent") { %>\
           <%= payload.pages[0].action %> the <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a> wiki.\
         <% } else if (type == "GistEvent") { %>\
-          <%= payload.action %>d gist: <a href="<%= payload.url %>" target="_blank">\
-          <%= payload.desc %></a>.\
+          <%= payload.action %>d gist <a href="<%= payload.url %>" target="_blank">\
+          #<%= payload.id %></a>.\
         <% } else { %>\
           interacted with  <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a>.\
         <% } %>\
