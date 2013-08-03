@@ -98,7 +98,7 @@ var GitHubActivity = (function($, _) {
       </div>\
       <div class="information">\
         <span class="muted"><small><% print($.timeago(created_at)); %></span></small><br />\
-        <a href="https://github.com/<%= actor %>" target="_blank"><%= actor %></a>\
+        <% if(type == "CreateEvent" || type == "WatchEvent" || type == "FollowEvent") { %><small> <% } %><a href="https://github.com/<%= actor %>" target="_blank"><%= actor %></a>\
         <% if (type == "PushEvent") { %>\
           pushed to <a href="<%= repository.url %>/tree/<%= payload.ref.substr(11) %>" target="_blank"><%= payload.ref.substr(11) %></a> \
           at <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a>.<br />\
@@ -109,7 +109,7 @@ var GitHubActivity = (function($, _) {
             <small><%= escapeHTML(sha[2]) %></small></li><% }); %>\
           </ul>\
         <% } else if (type == "CreateEvent") { %> \
-          created branch <a href="<%= repository.url %>/tree/<%= payload.ref %>" target="_blank"> \
+          created <%= payload.ref_type %> <a href="<%= repository.url %>/tree/<%= payload.ref %>" target="_blank"> \
           <%= payload.ref %></a> at <a href="<%= repository.url %>" target="_blank"><%= repository.name %></a>. \
         <% } else if (type == "DeleteEvent") { %>\
           deleted branch <%= payload.ref %> at <a href="<%= repository.url %>" target="_blank"><%= repository.name %></a>.\
@@ -121,7 +121,10 @@ var GitHubActivity = (function($, _) {
         <% } else if (type == "PullRequestEvent") { %>\
           <%= payload.action %> pull request <a href="<%= payload.pull_request.html_url %>" target="_blank">\
             <%= payload.pull_request.base.repo.full_name %>#<%= payload.pull_request.number %></a>.<br />\
-            <small><%= payload.pull_request.title %></small>\
+            <small><%= payload.pull_request.title %></small><br />\
+            <small class="branch-link"><%= payload.pull_request.commits %> commit<% if (payload.pull_request.commits !== 1) { %>s<% } %> \
+            with <%= payload.pull_request.additions %> addition<% if (payload.pull_request.additions !== 1) { %>s<% } %> and \
+            <%= payload.pull_request.deletions %> deletion<% if (payload.pull_request.deletions !== 1) { %>s<% } %>.</small>\
         <% } else if (type == "PullRequestReviewCommentEvent") { %>\
           commented on pull request for <a href="<%= url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a>.<br />\
           <small><%= escapeHTML(payload.comment.body) %></small>\
@@ -148,7 +151,7 @@ var GitHubActivity = (function($, _) {
         <% } else { %>\
           interacted with  <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a>.\
         <% } %>\
-      </div><div class="clear"></div>\
+      <% if(type == "CreateEvent" || type == "WatchEvent" || type == "FollowEvent") { %></small> <% } %></div><div class="clear"></div>\
     </div>';
 
   self.show_activity = function(username, selector, items, tmpl_selector) {
