@@ -104,11 +104,15 @@ var GitHubActivity = (function($, _) {
           pushed to <a href="<%= repository.url %>/tree/<%= payload.ref.substr(11) %>" target="_blank"><%= payload.ref.substr(11) %></a> \
           at <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a><br />\
           <ul>\
-          <% _.each(payload.shas, function(sha) { %>\
+          <% payload.shas.every(function(sha) { %>\
             <li><%= gravatarByEmail(sha[1], "gravatar-small") %> \
             <small class="sha"><a href="https://github.com/<%= repository.owner %>/<%= repository.name %>/commit/<%= sha[0] %>" target="_blank"><%= sha[0].substring(0, 6) %></a></small> \
-            <small><%= escapeHTML(sha[2]) %></small></li><% }); %>\
+            <small><%= escapeHTML(sha[2]) %></small></li>\
+            <% return payload.shas.indexOf(sha) !== 2 %>\
+          <% }); %>\
           </ul>\
+          <% if (payload.size > 3) { %><small><a class="more-commits" href="<%= url %>" target="_blank"><%= payload.size - 3 %> more commits &raquo;</a></small>\
+          <% } else if (payload.size > 1) { %><small><a class="more-commits" href="<%= url %>" target="_blank">View comparison for these <%= payload.size %> commits &raquo;</a></small><% } %>\
         <% } else if (type == "CreateEvent") { %> \
           created <%= payload.ref_type %> <a href="<%= repository.url %>/tree/<%= payload.ref %>" target="_blank">\
           <%= payload.ref %></a> at <a href="<%= repository.url %>" target="_blank"><%= repository.owner %>/<%= repository.name %></a>\
@@ -198,7 +202,7 @@ var GitHubActivity = (function($, _) {
       }
     });
     
-    $('#loading').fadeOut(1500);
+    $('#loading').delay(1500).fadeOut(1500);
     
   };
   return self;
