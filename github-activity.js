@@ -53,10 +53,12 @@ function gravatarById(hash, cssClass) {
 function iconFor(type) {
   if (type === "PushEvent") {
     return "icon-upload";
-  } else if (type === "CommentEvent" || type === "PullRequestReviewCommentEvent" || type === "IssueCommentEvent") {
+  } else if (type === "CommentEvent" || type === "PullRequestReviewCommentEvent" || type === "IssueCommentEvent" || type === "CommitCommentEvent") {
     return "icon-comments";
   } else if (type === "ForkEvent") {
     return "icon-code-fork";
+  } else if (type === "IssuesEvent") {
+    return "icon-check";
   } else if (type === "CreateEvent" || type === "MemberEvent"){
     return "icon-plus";
   } else if (type === "DeleteEvent") {
@@ -106,8 +108,7 @@ var GitHubActivity = (function($, _) {
           created branch <a href="<%= repository.url %>/tree/<%= payload.ref %>"> \
           <%= payload.ref %></a> at <a href="<%= repository.url %>"><%= repository.name %></a>. \
         <% } else if (type == "DeleteEvent") { %>\
-          deleted branch <a href="<%= repository.url %>/tree/<%= payload.ref %>"> \
-          <%= payload.ref %></a> at <a href="<%= repository.url %>"><%= repository.name %></a>.\
+          deleted branch <%= payload.ref %> at <a href="<%= repository.url %>"><%= repository.name %></a>.\
         <% } else if (type == "ForkEvent") { %>\
           forked <a href="<%= repository.url %>"><%= repository.owner %>/<%= repository.name %></a> to \
           <a href="<%= url %>"><%= actor %>/<%= repository.name %></a>. \
@@ -118,9 +119,14 @@ var GitHubActivity = (function($, _) {
         <% } else if (type == "PullRequestReviewCommentEvent") { %>\
           commented on pull request for <a href="<%= url %>"><%= repository.owner %>/<%= repository.name %></a>.<br />\
           <small><%= payload.comment.body %></small>\
+        <% } else if (type == "IssuesEvent") { %>\
+          <%= payload.action %> issue <a href="<%= url %>"><%= repository.owner %>/<%= repository.name %>#<%= payload.number %></a>.\
         <% } else if (type == "IssueCommentEvent") { %>\
           <a href="<%= url %>">commented</a> regarding <a href="<%= repository.url %>">\
             <%= actor %>/<%= repository.name %>.</a>\
+        <% } else if (type == "CommitCommentEvent") { %>\
+          commented on commit <a href="https://github.com/<%= repository.owner %>/<%= repository.name %>/commit/<%= payload.commit %>">\
+          <%= repository.owner %>/<%= repository.name %>@<%= payload.commit.substring(0, 10) %></a>.\
         <% } else if (type == "WatchEvent") { %>\
           starred <a href="<%= url %>"><%= repository.owner %>/<%= repository.name %></a>.\
         <% } else if (type == "FollowEvent") { %>\
