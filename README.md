@@ -32,8 +32,26 @@ The **username** parameter is required to use the widget, but the **limit** para
 
 Also be sure to change the values for the width and height if you need to.
 
+## Contributing to the Application
+
+If you'd like to contribute to the application or run a local copy, clone the repository, run bundle install, and fire up the rails server.
+
+```bash
+$ git clone https://github.com/caseyscarborough/github-activity.git
+$ cd github-activity
+$ bundle install
+$ rails s
+```
+
 ## To Do
-* More event types!
+
+### More event types!
+
+The application is currently missing the follwoing [event types](http://developer.github.com/v3/activity/events/types/):
+* [DownloadEvent](http://developer.github.com/v3/activity/events/types/#downloadevent)
+* [ForkApplyEvent](http://developer.github.com/v3/activity/events/types/#forkapplyevent)
+* [TeamAddEvent](http://developer.github.com/v3/activity/events/types/#teamaddevent)
+
 
 ## Fork and Enjoy
 
