@@ -24,6 +24,7 @@ ul {
 
 li {
   line-height: 1.4;
+  list-style-type: none;
 }
 
 small {
@@ -152,6 +153,14 @@ a {
 
 .single-line {
   line-height: 2.3;
+  font-size: 13px;
+  font-weight: normal;
+  color: #666;
+
+  a {
+    font-weight: normal;
+    .more-commits { font-size: 11px; }
+  }
 }
 
 .branch-link {
