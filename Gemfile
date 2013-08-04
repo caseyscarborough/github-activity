@@ -15,6 +15,7 @@ gem 'htmlentities'
 gem 'haml'
 gem 'spinjs-rails'
 gem 'font-awesome-rails'
+gem 'octokit'
 
 group :development, :test do
   gem 'rspec-rails'
