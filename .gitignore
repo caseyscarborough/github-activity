@@ -21,3 +21,5 @@
 /lib
 Gemfile.lock
 /log
+
+.rspec

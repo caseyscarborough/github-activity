@@ -16,6 +16,11 @@ gem 'haml'
 gem 'spinjs-rails'
 gem 'font-awesome-rails'
 
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'capybara'
+end 
+
 group :doc do
   gem 'sdoc', require: false
 end
