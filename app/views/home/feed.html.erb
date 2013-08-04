@@ -1,0 +1,125 @@
+<% username = @user_data['login'] %>
+<% name = @user_data['name'] %>
+<% url = @user_data['html_url'] %>
+<% avatar_url = @user_data['avatar_url'] %>
+<% one_line_events = ['CreateEvent', 'WatchEvent', 'FollowEvent', 'DeleteEvent', 'ForkEvent', 'GistEvent', 'MemberEvent'] %>
+
+<div class="header">
+  <div class="github-icon"><i class="icon-github icon-large"></i></div>
+  <div class="user-info"><%= link_to name, url %><p><%= link_to username, url %></p></div>
+  <div class="gravatar"><%= link_to url do image_tag avatar_url end %></div>
+</div><div class="push"></div>
+
+<% @event_data.each_with_index do |a, i| %>
+  
+  <% type = a['type'] %>
+  <% repo = a['repo']['name'] %>
+  <% p = a['payload'] %>
+  <% timestamp = DateTime.parse(a['created_at']) %>
+
+
+  <div class="activity">
+    <div class="activity-icon"><i class="<%= icon_for(type) %> icon-large"></i></div>
+
+    <div class="information">
+      <% if one_line_events.include?(type) %>
+        <small class="single-line">
+      <% else %><span class="time"><%= time_ago_in_words(timestamp) %> ago</span><br /><% end %>
+
+      <%= link_to username, github_link(username) %>
+      
+      <%#-- Push events are the most complicated events, and require the most complex template --%>
+      <% if type == 'PushEvent' %>
+        <% branch = p['ref'][11..-1] %>
+        <% commits = p['commits'] || p['shas'] %>
+        pushed to <%= link_to branch, github_link(repo + '/tree/' + branch) %> at <%= link_to repo, github_link(repo) %>
+        
+        <%#-- Show the three latest commits --%>
+        <ul><% commits.each_with_index do |c, i| %>
+          <% begin %><li><small>
+            <%= image_tag gravatar_for(c['author']['email']) || gravatar_for(c[1]), class: 'gravatar-small' %> 
+            <%= link_to c['sha'][0..5], convert(c['url']) || c[0], class: 'sha' %> 
+            <%= truncate(c['message'], length: 70) %>
+          </small></li><% rescue %><% end %>
+          <% break if i == 2 %>
+        <% end %></ul>
+
+        <%#-- Display compare messages for multiple commits --%>
+        <% begin %>
+        <small>
+          <%#-- Yes, this is hideous. --%>
+          <% if p['size'] > 3 %>
+            <%= link_to "#{p['size'] - 3} more commits " + HTMLEntities.new.decode('&raquo;'), 
+            "#{convert(a['repo']['url'])}/compare/#{p['before'][0..9]}...#{p['head'][0..9]}", class: 'more-commits' %>
+          <% elsif p['size'] > 1 %>
+            <%= link_to "View comparision for these #{p['size']} commits " + HTMLEntities.new.decode('&raquo;'), 
+            "#{convert(a['repo']['url'])}/compare/#{p['before'][0..9]}...#{p['head'][0..9]}", class: 'more-commits' %>
+          <% end %>
+        </small>
+        <% rescue %><% end %>
+
+      <% elsif type == 'CreateEvent' %> 
+        <% if p['ref_type'] == 'tag' %>
+          created tag <%= link_to p['ref'], github_link(repo + '/tree/' + p['ref']) %> at <%= link_to repo, github_link(repo) %>
+        <% elsif p['ref_type'] == 'repository' %>
+          created repository <%= link_to repo, github_link(repo) %>
+        <% elsif p['ref_type'] == 'branch' %>
+          created branch <%= link_to p['ref'], github_link(repo + '/tree/' + p['ref']) %> at <%= link_to repo, github_link(repo) %>
+        <% end %>
+
+      <% elsif type == 'WatchEvent' %> starred <%= link_to repo, github_link(repo) %>
+      <% elsif type == 'ForkEvent' %> forked <%= link_to repo, github_link(repo) %>
+      <% elsif type == 'DeleteEvent' %> deleted <%= a['payload']['ref'] %> at <%= link_to repo, github_link(repo) %>
+      <% elsif type == 'FollowEvent' %> started following <%= link_to a['payload']['target']['login'], a['payload']['target']['html_url'] %>
+      <% elsif type == 'PublicEvent' %> open sourced <%= link_to repo, github_link(repo) %>
+      <% elsif type == 'GistEvent' %> <%= p['action'] %>d <%= link_to "gist: #{p['gist']['id']}", p['gist']['html_url'] %>
+      <% elsif type == 'MemberEvent' %> <%= p['action'] %> <%= link_to p['member']['login'], github_link(p['member']['login']) %> to <%= link_to repo, github_link(repo) %>
+
+      <% elsif type == 'GollumEvent' %>
+        <% pg = p['pages'][0] %>
+        <%= pg['action'] %> the <%= link_to repo, github_link(repo) %> wiki<br />
+        <small><%= pg['action'].capitalize %> <%= link_to pg['page_name'], pg['html_url'] %>.</small>
+
+      <% elsif type == 'PullRequestEvent' %>
+        <% pr = p['pull_request'] %>
+        <%= p['action'] %> pull request <%= link_to "#{repo}##{pr['number'].to_s}", pr['html_url'] %><br />
+        <small><%= pr['title'] %></small><br />
+        <small class="branch-link"><%= pluralize(pr['commits'], 'commit') %> with <%= pluralize(pr['additions'], 'addition') %> and <%= pluralize(pr['deletions'], 'deletion') %></small>
+
+      <% elsif type == 'PullRequestReviewCommentEvent' %>
+        <% pr = p['pull_request'] %>
+        commented on pull request <%= link_to "#{repo}##{p['comment']['pull_request_url'].split('/')[-1]}", p['comment']['html_url'] %><br />
+        <small><%= p['comment']['body'] %></small>
+
+      <% elsif type == 'IssuesEvent' %>
+        <%= p['action'] %> issue <%= link_to "#{repo}##{p['issue']['number']}", p['issue']['html_url'] %><br />
+        <small><%= p['issue']['title'] %></small>
+
+      <% elsif type == 'IssueCommentEvent' %>
+        commented on issue <%= link_to "#{repo}##{p['issue']['number']}", p['issue']['html_url'] %><br />
+        <small><%= p['comment']['body'] %></small>
+
+      <% elsif type == 'CommitCommentEvent' %>
+        commented on commit <%= link_to "#{repo}@#{p['comment']['commit_id'][0..9]}", p['comment']['html_url'] %><br />
+        <small><%= p['comment']['body'] %></small>
+
+      <%#-- Catch all --%>
+      <% else %>interacted with <%= link_to repo, github_link(repo) %>
+      <% end %>
+
+      <% if one_line_events.include?(type) %>
+        <span class="time"><%= time_ago_in_words(timestamp) %> ago</span></small>
+      <% end %>
+
+    </div><div class="clear"></div>
+  </div>
+
+  <% break if i + 1 == @limit.to_i %>
+
+<% end %>
+
+
+<div class="push-small"></div>
+<div class="footer">
+  <a href="http://github.com/caseyscarborough/github-activity" target="_blank">GitHub Activity Stream</a>
+</div>
