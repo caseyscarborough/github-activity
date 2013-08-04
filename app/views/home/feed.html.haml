@@ -60,10 +60,10 @@
           - begin
             %small
               -# Yes, this is hideous.
-              - if p.distinct_size > 3
-                = link_to "#{p.distinct_size - 3} more commits " + HTMLEntities.new.decode('&raquo;'), "#{convert(repo.url)}/compare/#{p.before[0..9]}...#{p.head[0..9]}", class: 'more-commits'
-              - elsif p.distinct_size > 1
-                = link_to "View comparision for these #{p.distinct_size} commits " + HTMLEntities.new.decode('&raquo;'), "#{convert(repo.url)}/compare/#{p.before[0..9]}...#{p.head[0..9]}", class: 'more-commits'
+              - if commits.size > 3
+                = link_to "#{commits.size - 3} more commits " + HTMLEntities.new.decode('&raquo;'), "#{convert(repo.url)}/compare/#{p.before[0..9]}...#{p.head[0..9]}", class: 'more-commits'
+              - elsif commits.size > 1
+                = link_to "View comparison for these #{commits.size} commits " + HTMLEntities.new.decode('&raquo;'), "#{convert(repo.url)}/compare/#{p.before[0..9]}...#{p.head[0..9]}", class: 'more-commits'
           - rescue
 
         - elsif type == 'CreateEvent'
