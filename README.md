@@ -1,16 +1,14 @@
 # GitHub Activity Stream Widget
 
-This repository is an embeddable widget that displays a user's public activity on GitHub. It displays a user's username, name, photo, and a specified number of recent activity updates.
+This repository is an small Rails app that creates an embeddable widget to display a user's public activity on GitHub. It displays a user's username, name, photo, and a specified number of recent activity updates. This small application was previously a single-page written completely in Javascript, but was converted for better performance.
 
-To see a demo of the widget, click [here](http://caseyscarborough.github.com/github-activity/?username=caseyscarborough&limit=30).
+To see a demo of the widget, click [here](http://ghactivity.com/caseyscarborough).
 
 To see how it will look for another account, you can update the URL string with your username (or someone else's).
 
 Here is a sample screenshot of the widget:
 
-<p align="center">
-  <img src="https://caseyscarborough.github.com/github-activity/img/screenshot.png" title="GitHub Activity Stream for @matz" />
-</p>
+<p align="center"><img src="https://caseyscarborough.github.com/github-activity/img/screenshot.png" title="GitHub Activity Stream for @matz" /></p>
 
 ## Embedding the Widget
 
@@ -20,13 +18,13 @@ The **username** parameter is required to use the widget, but the **limit** para
 
 **With Specific Limit**
 ```html
-<iframe src="http://caseyscarborough.github.com/github-activity/?username=USERNAME&limit=LIMIT"
+<iframe src="http://ghactivity.com/username/limit"
   allowtransparency="true" frameborder="0" width="100%" height="400px"></iframe>
 ```
 
 **Without Specific Limit**
 ```html
-<iframe src="http://caseyscarborough.github.com/github-activity/?username=USERNAME"
+<iframe src="http://ghactivity.com/username"
   allowtransparency="true" frameborder="0" width="100%" height="400px"></iframe>
 ```
 
@@ -44,28 +42,7 @@ widget and hosting a copy on your site in a folder named `github-activity`. You 
 ```
 
 ## To Do
-
-* Add support for more event types.
-* target="_blank" on all links
-
-## Contributions and Acknowledgements
-
-This idea began by a project by [Graeme Sutherland](https://github.com/grasuth), which was a JS library to retrieve some basic data 
-from a user's GitHub account. I was looking for a decent GitHub activity feed at that time and couldn't find one to suit my needs at 
-the time, so I decided to build my own.
-
-* [Graeme Sutherland](https://github.com/grasuth)
-* [Brett Bohnenkamper](https://github.com/KittyKatt)
-
-Click [here](https://github.com/caseyscarborough/github-activity/commits/master) to view the full list of commits and contributions.
-
-**The following libraries are used in the project:**
-
-* [jQuery](http://jquery.com/)
-* [underscore.js](http://underscorejs.org/)
-* [timeago.js](http://timeago.yarp.com/)
-* [spin.js](http://fgnass.github.io/spin.js/)
-* [FontAwesome](http://fontawesome.io)
+* More event types!
 
 ## Fork and Enjoy
 
