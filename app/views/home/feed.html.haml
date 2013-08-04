@@ -20,123 +20,126 @@
 - if @event_data.size == 0
   .info
     #{username} doesn’t have any public activity yet.
+- elsif @user_data.size == 1
+  .info
+    #{params[:username]} doesn’t exist.
+- else
+  - @event_data.each_with_index do |a, i|
+    - type = a['type']
+    - repo = a['repo']['name']
+    - p = a['payload']
+    - timestamp = DateTime.parse(a['created_at'])
 
-- @event_data.each_with_index do |a, i|
-  - type = a['type']
-  - repo = a['repo']['name']
-  - p = a['payload']
-  - timestamp = DateTime.parse(a['created_at'])
+    .activity
+      .activity-icon
+        %i{ class: "#{icon_for(type)} icon-large"}
 
-  .activity
-    .activity-icon
-      %i{ class: "#{icon_for(type)} icon-large"}
+      .information{ class: (one_line_events.include?(type) ? 'single-line' : '') }
+        - unless one_line_events.include?(type)
+          %span{class: "time"}
+            = time_ago_in_words(timestamp)
+            ago<br />
 
-    .information{ class: (one_line_events.include?(type) ? 'single-line' : '') }
-      - unless one_line_events.include?(type)
-        %span{class: "time"}
-          = time_ago_in_words(timestamp)
-          ago<br />
+        = link_to username, github_link(username)
+          
+        -# Push events are the most complicated events, and require the most complex template
+        - if type == 'PushEvent'
+          - branch = p['ref'][11..-1]
+          - commits = p['commits'] || p['shas']
+          pushed to #{link_to branch, github_link(repo + '/tree/' + branch)} at #{link_to repo, github_link(repo)}
+          
+          -# Show the three latest commits
+          %ul
+          - commits.each_with_index do |c, i|
+            - begin
+              %li
+                %small
+                  = image_tag gravatar_for(c['author']['email']) || gravatar_for(c[1]), class: 'gravatar-small'
+                  = link_to c['sha'][0..5], convert(c['url']) || c[0], class: 'sha'
+                  = truncate(c['message'], length: 100)
+            - rescue
+            - break if i == 2
 
-      = link_to username, github_link(username)
-        
-      -# Push events are the most complicated events, and require the most complex template
-      - if type == 'PushEvent'
-        - branch = p['ref'][11..-1]
-        - commits = p['commits'] || p['shas']
-        pushed to #{link_to branch, github_link(repo + '/tree/' + branch)} at #{link_to repo, github_link(repo)}
-        
-        -# Show the three latest commits
-        %ul
-        - commits.each_with_index do |c, i|
+          -# Display compare messages for multiple commits
           - begin
-            %li
-              %small
-                = image_tag gravatar_for(c['author']['email']) || gravatar_for(c[1]), class: 'gravatar-small'
-                = link_to c['sha'][0..5], convert(c['url']) || c[0], class: 'sha'
-                = truncate(c['message'], length: 100)
+            %small
+              -# Yes, this is hideous.
+              - if p['size'] > 3
+                = link_to "#{p['size'] - 3} more commits " + HTMLEntities.new.decode('&raquo;'), "#{convert(a['repo']['url'])}/compare/#{p['before'][0..9]}...#{p['head'][0..9]}", class: 'more-commits'
+              - elsif p['size'] > 1
+                = link_to "View comparision for these #{p['size']} commits " + HTMLEntities.new.decode('&raquo;'), "#{convert(a['repo']['url'])}/compare/#{p['before'][0..9]}...#{p['head'][0..9]}", class: 'more-commits'
           - rescue
-          - break if i == 2
 
-        -# Display compare messages for multiple commits
-        - begin
+        - elsif type == 'CreateEvent'
+          - if p['ref_type'] == 'tag'
+            created tag #{link_to p['ref'], github_link(repo + '/tree/' + p['ref'])} at #{link_to repo, github_link(repo)}
+          - elsif p['ref_type'] == 'repository'
+            created repository #{link_to repo, github_link(repo)}
+          - elsif p['ref_type'] == 'branch'
+            created branch #{link_to p['ref'], github_link(repo + '/tree/' + p['ref'])} at #{link_to repo, github_link(repo)}
+
+        - elsif type == 'WatchEvent' 
+          starred #{link_to repo, github_link(repo)}
+
+        - elsif type == 'ForkEvent' 
+          forked #{link_to repo, github_link(repo)}
+
+        - elsif type == 'DeleteEvent'
+          deleted #{a['payload']['ref']} at #{link_to repo, github_link(repo)}
+
+        - elsif type == 'FollowEvent' 
+          started following #{link_to a['payload']['target']['login'], a['payload']['target']['html_url']}
+
+        - elsif type == 'PublicEvent' 
+          open sourced #{link_to repo, github_link(repo)}
+
+        - elsif type == 'GistEvent' 
+          - if p['gist']
+            #{p['action']}d #{link_to "gist: #{p['gist']['id']}", p['gist']['html_url']}
+          - elsif p['url']
+            #{p['action']}d #{link_to p['name'], p['url']}
+
+        - elsif type == 'MemberEvent' 
+          #{p['action']} #{link_to p['member']['login'], github_link(p['member']['login'])} to #{link_to repo, github_link(repo)}
+
+        - elsif type == 'GollumEvent'
+          - pg = p['pages'][0]
+          #{pg['action']} the #{link_to repo, github_link(repo)} wiki<br />
           %small
-            -# Yes, this is hideous.
-            - if p['size'] > 3
-              = link_to "#{p['size'] - 3} more commits " + HTMLEntities.new.decode('&raquo;'), "#{convert(a['repo']['url'])}/compare/#{p['before'][0..9]}...#{p['head'][0..9]}", class: 'more-commits'
-            - elsif p['size'] > 1
-              = link_to "View comparision for these #{p['size']} commits " + HTMLEntities.new.decode('&raquo;'), "#{convert(a['repo']['url'])}/compare/#{p['before'][0..9]}...#{p['head'][0..9]}", class: 'more-commits'
-        - rescue
+            #{pg['action'].capitalize} #{link_to pg['page_name'], pg['html_url']}.
 
-      - elsif type == 'CreateEvent'
-        - if p['ref_type'] == 'tag'
-          created tag #{link_to p['ref'], github_link(repo + '/tree/' + p['ref'])} at #{link_to repo, github_link(repo)}
-        - elsif p['ref_type'] == 'repository'
-          created repository #{link_to repo, github_link(repo)}
-        - elsif p['ref_type'] == 'branch'
-          created branch #{link_to p['ref'], github_link(repo + '/tree/' + p['ref'])} at #{link_to repo, github_link(repo)}
+        - elsif type == 'PullRequestEvent'
+          - pr = p['pull_request']
+          #{p['action']} pull request #{link_to "#{repo}##{pr['number'].to_s}", pr['html_url']}<br />
+          %small
+            #{pr['title']}<br />
+          %small{class: "branch-link"}
+            #{pluralize(pr['commits'], 'commit')} with #{pluralize(pr['additions'], 'addition')} and #{pluralize(pr['deletions'], 'deletion')}
 
-      - elsif type == 'WatchEvent' 
-        starred #{link_to repo, github_link(repo)}
+        -elsif type == 'PullRequestReviewCommentEvent'
+          - pr = p['pull_request']
+          commented on pull request #{link_to repo + p['comment']['_links']['html']['href'].split('/')[-1], p['comment']['html_url']}<br />
+          %small= truncate(p['comment']['body'], length: 159)
 
-      - elsif type == 'ForkEvent' 
-        forked #{link_to repo, github_link(repo)}
+        - elsif type == 'IssuesEvent'
+          #{p['action']} issue #{link_to "#{repo}##{p['issue']['number']}", p['issue']['html_url']}<br />
+          %small= p['issue']['title']
 
-      - elsif type == 'DeleteEvent'
-        deleted #{a['payload']['ref']} at #{link_to repo, github_link(repo)}
+        - elsif type == 'IssueCommentEvent'
+          commented on issue #{link_to "#{repo}##{p['issue']['number']}", p['issue']['html_url']}<br />
+          %small= truncate(p['comment']['body'], length: 159)
 
-      - elsif type == 'FollowEvent' 
-        started following #{link_to a['payload']['target']['login'], a['payload']['target']['html_url']}
+        - elsif type == 'CommitCommentEvent'
+          commented on commit #{link_to "#{repo}@#{p['comment']['commit_id'][0..9]}", p['comment']['html_url']}<br />
+          %small= truncate(p['comment']['body'], length: 159)
 
-      - elsif type == 'PublicEvent' 
-        open sourced #{link_to repo, github_link(repo)}
+        - else 
+          interacted with #{link_to repo, github_link(repo)}
 
-      - elsif type == 'GistEvent' 
-        - if p['gist']
-          #{p['action']}d #{link_to "gist: #{p['gist']['id']}", p['gist']['html_url']}
-        - elsif p['url']
-          #{p['action']}d #{link_to p['name'], p['url']}
+        - if one_line_events.include?(type)
+          %span{class: "time"}
+            #{time_ago_in_words(timestamp)} ago
 
-      - elsif type == 'MemberEvent' 
-        #{p['action']} #{link_to p['member']['login'], github_link(p['member']['login'])} to #{link_to repo, github_link(repo)}
+      .clear
 
-      - elsif type == 'GollumEvent'
-        - pg = p['pages'][0]
-        #{pg['action']} the #{link_to repo, github_link(repo)} wiki<br />
-        %small
-          #{pg['action'].capitalize} #{link_to pg['page_name'], pg['html_url']}.
-
-      - elsif type == 'PullRequestEvent'
-        - pr = p['pull_request']
-        #{p['action']} pull request #{link_to "#{repo}##{pr['number'].to_s}", pr['html_url']}<br />
-        %small
-          #{pr['title']}<br />
-        %small{class: "branch-link"}
-          #{pluralize(pr['commits'], 'commit')} with #{pluralize(pr['additions'], 'addition')} and #{pluralize(pr['deletions'], 'deletion')}
-
-      -elsif type == 'PullRequestReviewCommentEvent'
-        - pr = p['pull_request']
-        commented on pull request #{link_to repo + p['comment']['_links']['html']['href'].split('/')[-1], p['comment']['html_url']}<br />
-        %small= truncate(p['comment']['body'], length: 159)
-
-      - elsif type == 'IssuesEvent'
-        #{p['action']} issue #{link_to "#{repo}##{p['issue']['number']}", p['issue']['html_url']}<br />
-        %small= p['issue']['title']
-
-      - elsif type == 'IssueCommentEvent'
-        commented on issue #{link_to "#{repo}##{p['issue']['number']}", p['issue']['html_url']}<br />
-        %small= truncate(p['comment']['body'], length: 159)
-
-      - elsif type == 'CommitCommentEvent'
-        commented on commit #{link_to "#{repo}@#{p['comment']['commit_id'][0..9]}", p['comment']['html_url']}<br />
-        %small= truncate(p['comment']['body'], length: 159)
-
-      - else 
-        interacted with #{link_to repo, github_link(repo)}
-
-      - if one_line_events.include?(type)
-        %span{class: "time"}
-          #{time_ago_in_words(timestamp)} ago
-
-    .clear
-
-  - break if i + 1 == @limit.to_i
+    - break if i + 1 == @limit.to_i
