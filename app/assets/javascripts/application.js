@@ -13,8 +13,5 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
-//= require_tree .
-
-$(document).ready(function() {
-  $('a').attr('target','_blank');
-});
+//= require jquery.spin
+//= require main

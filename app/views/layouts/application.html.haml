@@ -5,7 +5,8 @@
       Github Activity Stream
     #{stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true}
     #{javascript_include_tag "application", "data-turbolinks-track" => true}
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     #{csrf_meta_tags}
   %body
-    #{yield}
+    .wrapper{style: 'display:none'}
+      #{yield}
+    .loading

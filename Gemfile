@@ -13,6 +13,8 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'htmlentities'
 gem 'haml'
+gem 'spinjs-rails'
+gem 'font-awesome-rails'
 
 group :doc do
   gem 'sdoc', require: false
