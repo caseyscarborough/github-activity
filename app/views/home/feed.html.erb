@@ -39,7 +39,7 @@
           <% begin %><li><small>
             <%= image_tag gravatar_for(c['author']['email']) || gravatar_for(c[1]), class: 'gravatar-small' %> 
             <%= link_to c['sha'][0..5], convert(c['url']) || c[0], class: 'sha' %> 
-            <%= truncate(c['message'], length: 70) %>
+            <%= truncate(c['message'], length: 100) %>
           </small></li><% rescue %><% end %>
           <% break if i == 2 %>
         <% end %></ul>

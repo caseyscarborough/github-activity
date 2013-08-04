@@ -19,5 +19,4 @@
 /vendor
 /lib
 Gemfile.lock
-/db
 /log
