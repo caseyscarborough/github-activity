@@ -7,6 +7,10 @@
     #{javascript_include_tag "application", "data-turbolinks-track" => true}
     #{csrf_meta_tags}
   %body
-    .wrapper{style: 'display:none'}
+    .wrapper
       #{yield}
     .loading
+
+  .push-small
+  .footer
+    = link_to "GitHub Activity Stream", "http://github.com/caseyscarborough/github-activity" 

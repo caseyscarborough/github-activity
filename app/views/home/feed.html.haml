@@ -17,6 +17,10 @@
       = image_tag avatar_url 
 .push
 
+- if @event_data.size == 0
+  .info
+    #{username} doesn’t have any public activity yet.
+
 - @event_data.each_with_index do |a, i|
   - type = a['type']
   - repo = a['repo']['name']
@@ -87,7 +91,10 @@
         open sourced #{link_to repo, github_link(repo)}
 
       - elsif type == 'GistEvent' 
-        #{p['action']}d #{link_to "gist: #{p['gist']['id']}", p['gist']['html_url']}
+        - if p['gist']
+          #{p['action']}d #{link_to "gist: #{p['gist']['id']}", p['gist']['html_url']}
+        - elsif p['url']
+          #{p['action']}d #{link_to p['name'], p['url']}
 
       - elsif type == 'MemberEvent' 
         #{p['action']} #{link_to p['member']['login'], github_link(p['member']['login'])} to #{link_to repo, github_link(repo)}
@@ -101,14 +108,15 @@
       - elsif type == 'PullRequestEvent'
         - pr = p['pull_request']
         #{p['action']} pull request #{link_to "#{repo}##{pr['number'].to_s}", pr['html_url']}<br />
-        %small= #{pr['title']}
+        %small
+          #{pr['title']}<br />
         %small{class: "branch-link"}
           #{pluralize(pr['commits'], 'commit')} with #{pluralize(pr['additions'], 'addition')} and #{pluralize(pr['deletions'], 'deletion')}
 
       -elsif type == 'PullRequestReviewCommentEvent'
         - pr = p['pull_request']
-        commented on pull request #{link_to "#{repo}##{p['comment']['pull_request_url'].split('/')[-1]}", p['comment']['html_url']}<br />
-        %small= p['comment']['body']
+        commented on pull request #{link_to repo + p['comment']['_links']['html']['href'].split('/')[-1], p['comment']['html_url']}<br />
+        %small= truncate(p['comment']['body'], length: 159)
 
       - elsif type == 'IssuesEvent'
         #{p['action']} issue #{link_to "#{repo}##{p['issue']['number']}", p['issue']['html_url']}<br />
@@ -116,11 +124,11 @@
 
       - elsif type == 'IssueCommentEvent'
         commented on issue #{link_to "#{repo}##{p['issue']['number']}", p['issue']['html_url']}<br />
-        %small= p['comment']['body']
+        %small= truncate(p['comment']['body'], length: 159)
 
       - elsif type == 'CommitCommentEvent'
         commented on commit #{link_to "#{repo}@#{p['comment']['commit_id'][0..9]}", p['comment']['html_url']}<br />
-        %small= p['comment']['body']
+        %small= truncate(p['comment']['body'], length: 159)
 
       - else 
         interacted with #{link_to repo, github_link(repo)}
@@ -132,6 +140,3 @@
     .clear
 
   - break if i + 1 == @limit.to_i
-.push-small
-.footer
-  = link_to "GitHub Activity Stream", "http://github.com/caseyscarborough/github-activity" 
