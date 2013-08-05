@@ -8,7 +8,7 @@ To see how it will look for another account, you can update the URL string with 
 
 Here is a sample screenshot of the widget:
 
-<p align="center"><img src="https://caseyscarborough.github.com/github-activity/img/screenshot.png" title="GitHub Activity Stream for @matz" /></p>
+<p align="center"><img src="https://raw.github.com/caseyscarborough/github-activity/master/app/assets/images/screenshot.png" title="GitHub Activity Stream for @matz" /></p>
 
 ## Embedding the Widget
 
