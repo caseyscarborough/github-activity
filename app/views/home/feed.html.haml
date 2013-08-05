@@ -130,7 +130,7 @@
             %small= truncate(p.comment.body, length: 159)
 
           - elsif type == 'CommitCommentEvent'
-            commented on commit #{link_to "#{repo}@#{p['comment']['commit_id'][0..9]}", p['comment']['html_url']}<br />
+            commented on commit #{link_to "#{repo.name}@#{p['comment']['commit_id'][0..9]}", p['comment']['html_url']}<br />
             %small= truncate(p.comment.body, length: 159)
 
           - else 
