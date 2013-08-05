@@ -22,3 +22,5 @@
 /log
 
 .rspec
+/config/application.yml
+/config/deploy.rb

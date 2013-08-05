@@ -17,6 +17,11 @@ gem 'spinjs-rails'
 gem 'font-awesome-rails'
 gem 'octokit'
 
+group :development do
+  gem 'capistrano'
+  gem 'rvm-capistrano'
+end
+
 group :development, :test do
   gem 'rspec-rails'
   gem 'capybara'
