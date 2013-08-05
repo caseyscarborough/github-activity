@@ -19,8 +19,6 @@
 .DS_Store
 /vendor
 /lib
-Gemfile.lock
 /log
 
 .rspec
-/config/application.yml
