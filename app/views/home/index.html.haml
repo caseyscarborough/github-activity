@@ -1,0 +1,47 @@
+%html
+%head
+  = stylesheet_link_tag "//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css"
+  = stylesheet_link_tag "http://yandex.st/highlightjs/7.3/styles/tomorrow-night.min.css"
+  = stylesheet_link_tag "home.css"
+  = javascript_include_tag "http://yandex.st/highlightjs/7.3/highlight.min.js"
+  
+  %script
+    hljs.initHighlightingOnLoad();
+    
+%body
+- link_to "https://github.com/caseyscarborough/github-activity" do
+  = image_tag "https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png", alt: "Fork me on GitHub"
+
+.container-fluid
+  .row-fluid
+    .span2.hidden-phone
+    .span8.center
+      %h1
+        %i{class: "icon-github"} 
+        GitHub Activity Stream
+      
+      %iframe{src: "http://ghbtns.com/github-btn.html?user=caseyscarborough&repo=github-activity&type=watch&count=true", frameborder:"0", scrolling: "0", width: "110", height: "20"}
+      
+      %iframe{src: "http://ghbtns.com/github-btn.html?user=caseyscarborough&repo=github-activity&type=fork&count=true", frameborder:"0", scrolling: "0", watchidth: "110", height: "20"}
+      
+      %p
+        GitHub Activity Stream an embeddable widget that displays a user's public activity on GitHub. It displays a user's username, name, photo, and a specified number of recent activity updates.
+      %p
+        A demo of the activity stream is shown below:<br />
+      
+      .github-activity
+        %iframe{class: "gha-frame", src: "/caseyscarborough", frameborder: "0", width: "100%", height: "400px"}
+        <br /><br />
+
+      %p
+        The activity stream is embeddable into any HTML page by including a small piece of code. Just substitute the username of the user which the widget should display into the code below:
+      
+      %pre.highlight
+        %code.html
+          &lt;iframe src="http://ghactivity.com/username" frameborder="0" width="100%" height="500px"&gt;&lt;/iframe&gt;</code>
+      <br />
+      %a{href: "http://github.com/caseyscarborough/github-activity", class: "btn btn-large btn-danger"}
+        Visit Project on GitHub
+      <br /><br /><br />
+      %small{class: "muted"}
+        Casey Scarborough &middot; 2013
