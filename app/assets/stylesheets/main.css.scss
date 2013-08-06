@@ -148,6 +148,13 @@ a {
   border-bottom: 1px solid #ddd;
 }
 
+.repo {
+  clear: both;
+  padding: 10px 0;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+}
+
 .activity-icon {
   float: left;
   clear: both;
@@ -205,6 +212,20 @@ a {
   width: 18px;
 }
 
+.repo-info {
+  display: inline-block;
+  width: 60%;
+  font-size: 15px;
+}
+
+.repo-data {
+  position: relative;
+  right: 10px;
+  float: right;
+  display: inline;
+  font-size: 11px;
+}
+
 .footer {
   padding: 5px;
   border-top: 1px solid #ddd;
@@ -221,6 +242,9 @@ a {
   background: linear-gradient(to bottom,  #ffffff 0%,#f4f4f4 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f4f4f4',GradientType=0 ); /* IE6-9 */
   box-shadow: 0px 0px 5px #ddd;
+  color: #495961;
+  font-size: 13px;
+  padding-left: 10px;
 
   a {
     float: right;
@@ -235,6 +259,20 @@ a {
   }
 }
 
+
 .clear {
   clear: both;
+}
+
+.muted {
+  color: #666;
+}
+
+
+pre {
+  padding: 0;
+  color: white;
+  border-radius: 0;
+  box-shadow: 1px 1px 4px #bbb;
+  border: 0;
 }

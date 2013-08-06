@@ -1,14 +1,13 @@
-%html
 %head
   = stylesheet_link_tag "//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css"
   = stylesheet_link_tag "http://yandex.st/highlightjs/7.3/styles/tomorrow-night.min.css"
-  = stylesheet_link_tag "home.css"
+  = stylesheet_link_tag "home", media: "all", "data-turbolinks-track" => true
   = javascript_include_tag "http://yandex.st/highlightjs/7.3/highlight.min.js"
   
   %script
     hljs.initHighlightingOnLoad();
-    
-%body
+
+%body.index-body
 - link_to "https://github.com/caseyscarborough/github-activity" do
   = image_tag "https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png", alt: "Fork me on GitHub"
 
@@ -36,9 +35,9 @@
       %p
         The activity stream is embeddable into any HTML page by including a small piece of code. Just substitute the username of the user which the widget should display into the code below:
       
-      %pre.highlight
+      %pre.highlight{style: 'padding: 0'}
         %code.html
-          &lt;iframe src="http://ghactivity.com/username" frameborder="0" width="100%" height="500px"&gt;&lt;/iframe&gt;</code>
+          &lt;iframe src="http://ghactivity.com/username" frameborder="0" width="100%" height="500px"&gt;&lt;/iframe&gt;
       <br />
       %a{href: "http://github.com/caseyscarborough/github-activity", class: "btn btn-large btn-danger"}
         Visit Project on GitHub

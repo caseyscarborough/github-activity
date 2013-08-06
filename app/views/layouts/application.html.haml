@@ -3,9 +3,9 @@
   %head
     %title
       Github Activity Stream
-    #{stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true}
-    #{javascript_include_tag "application", "data-turbolinks-track" => true}
-    #{csrf_meta_tags}
+    = stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true
+    = javascript_include_tag "application", "data-turbolinks-track" => true
+    = csrf_meta_tags
   %body
     .wrapper
       #{yield}
@@ -13,4 +13,5 @@
 
   .push-small
   .footer
+    = yield(:feed_type)
     = link_to "GitHub Activity Stream", "http://github.com/caseyscarborough/github-activity" 

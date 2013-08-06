@@ -1,9 +1,4 @@
-html, body {
-  width: 100%;
-  height: 100%;
-}
-
-body {
+.index-body {
   font-family: Helvetica, arial, freesans, clean, sans-serif;
   font-size: 16px;
   line-height: 1.4;
@@ -18,15 +13,6 @@ body {
   background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(226,226,226,1) 100%); /* IE10+ */
   background: radial-gradient(ellipse at center,  rgba(255,255,255,1) 0%,rgba(226,226,226,1) 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e2e2e2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-
-}
-
-pre {
-  padding: 0;
-  color: white;
-  border-radius: 0;
-  box-shadow: 1px 1px 4px #bbb;
-  border: 0;
 }
 
 code {

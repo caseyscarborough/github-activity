@@ -1,0 +1,11 @@
+.header
+  .github-icon
+    %i{class: 'icon-github icon-large'}
+  .user-info{ class: @user.name ? '' : 'without-name' }
+    = link_to @user.name, @user.html_url if @user.name
+    %p
+      = link_to @user.login, @user.html_url
+  .gravatar 
+    = link_to @user.html_url do 
+      = image_tag @user.avatar_url 
+.push

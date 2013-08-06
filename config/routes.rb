@@ -1,6 +1,7 @@
 GithubActivity::Application.routes.draw do
-  get '/test/:username', to: "home#test"
-  get '/:username/:limit', to: "home#feed"
-  get '/:username' , to: "home#feed"
+  get '/:username/repos/:limit', to: "feed#repos"
+  get '/:username/repos', to: "feed#repos"
+  get '/:username/:limit', to: "feed#user"
+  get '/:username' , to: "feed#user"
   root to: 'home#index'
 end

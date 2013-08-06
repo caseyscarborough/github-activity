@@ -1,3 +1,5 @@
+- provide(:feed_type, 'Public Activity')
+
 -# Local variables
 - one_line_events = ['CreateEvent', 'WatchEvent', 'FollowEvent', 'DeleteEvent', 'ForkEvent', 'GistEvent', 'MemberEvent']
 
@@ -6,17 +8,8 @@
     The username #{@username} doesn't exist.
 
 - else
-  .header
-    .github-icon
-      %i{class: 'icon-github icon-large'}
-    .user-info{ class: @user.name ? '' : 'without-name'}
-      = link_to @user.name, @user.html_url if @user.name
-      %p
-        = link_to @user.login, @user.html_url
-    .gravatar 
-      = link_to @user.html_url do 
-        = image_tag @user.avatar_url 
-  .push
+  
+  = render partial: 'header'
 
   - if @events.size == 0
     .info
@@ -24,10 +17,10 @@
       
   - else 
     - @events.each_with_index do |event, i|
+      
       - type = event.type
       - repo = event.repo
       - p = event.payload
-      
       - timestamp = DateTime.parse(event.created_at)
 
       .activity

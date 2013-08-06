@@ -1,0 +1,28 @@
+- provide(:feed_type, 'Repositories')
+= render 'header'
+- if @repos.size == 0
+  .info
+    #{@username} doesn't have any repositories yet.
+- @repos.each_with_index do |repo, i|
+
+  .repo
+    .activity-icon
+      - if repo.fork == true
+        %i{ class: "icon-code-fork icon-large"}
+      - else 
+        %i{ class: "icon-book icon-large"}
+    .repo-data
+      %span{class: 'muted'}
+        #{repo.language}&nbsp;
+        %i{ class: 'icon-star'}
+          #{repo.watchers_count}&nbsp;
+        %i{ class: 'icon-code-fork'}
+          #{repo.forks_count}
+    .repo-info
+      %h3
+        #{link_to repo.name, repo.html_url}
+      %small
+        #{repo.description}<br />
+    .clear
+
+  - break if i + 1 == @limit.to_i
