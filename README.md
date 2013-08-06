@@ -1,6 +1,6 @@
 # GitHub Activity Stream Widget
 
-This repository is an small Rails app that creates an embeddable widget to display a user's public activity on GitHub. It displays a user's username, name, photo, and a specified number of recent activity updates. This small application was previously written in Javascript, but was converted to Rails for performance and expandability.
+This repository is an small Rails app that creates an embeddable widget to display a user's public activity or repository list on GitHub. It displays a user's username, name, photo, and a specified number of recent activity updates.
 
 To see a demo of the widget, click [here](http://ghactivity.com/caseyscarborough).
 
@@ -12,7 +12,7 @@ Here is a sample screenshot of the widget:
 
 ## Embedding the Widget
 
-To embed the built in widget on your site to show your GitHub activity stream, add the following HTML into your webpage, filling in your username and limit where necessary.
+To embed the widget on your site to show your GitHub activity stream, add the following HTML into your webpage, filling in your username and limit where necessary.
 
 The **username** parameter is required to use the widget, but the **limit** parameter is not. If the **limit** is not specified, it will default to the latest 30 activity events.
 
@@ -26,6 +26,20 @@ The **username** parameter is required to use the widget, but the **limit** para
 
 ```html
 <iframe src="http://ghactivity.com/username" frameborder="0" width="100%" height="400px"></iframe>
+```
+
+To embed the widget to show a list of your repositories, add /repos after your username, shown below. The **username** parameter is required to show repositories, but the **limit** parameter is not.
+
+**With Specific Limit**
+
+```html
+<iframe src="http://ghactivity.com/username/repos/limit" frameborder="0" width="100%" height="400px"></iframe>
+```
+
+**Show All Repositories**
+
+```html
+<iframe src="http://ghactivity.com/username/repos" frameborder="0" width="100%" height="400px"></iframe>
 ```
 
 Also be sure to change the values for the width and height if you need to.
@@ -51,7 +65,7 @@ Note: You don't need a GitHub client_id and client_secret to run the application
 
 ## To Do
 
-### More event types!
+### More event types for Public Activity feed!
 
 The application is currently missing the following [event types](http://developer.github.com/v3/activity/events/types/):
 * [DownloadEvent](http://developer.github.com/v3/activity/events/types/#downloadevent)
