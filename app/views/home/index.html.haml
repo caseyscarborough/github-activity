@@ -1,27 +1,27 @@
 %head
   = stylesheet_link_tag "//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css"
   = stylesheet_link_tag "http://yandex.st/highlightjs/7.3/styles/tomorrow-night.min.css"
-  = stylesheet_link_tag "home", media: "all", "data-turbolinks-track" => true
   = javascript_include_tag "http://yandex.st/highlightjs/7.3/highlight.min.js"
   
   %script
     hljs.initHighlightingOnLoad();
 
-%body.index-body
-- link_to "https://github.com/caseyscarborough/github-activity" do
-  = image_tag "https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png", alt: "Fork me on GitHub"
+%body{style: 'text-align:center;background:#f3f3f3'}
+= link_to "https://github.com/caseyscarborough/github-activity", style: 'position:fixed; right:0' do
+  - image_tag "https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png", alt: "Fork me on GitHub"
 
 .container-fluid
   .row-fluid
     .span2.hidden-phone
-    .span8.center
+    .span8{style: 'text-align:center;'}
       %h1
         %i{class: "icon-github"} 
         GitHub Activity Stream
-      
-      %iframe{src: "http://ghbtns.com/github-btn.html?user=caseyscarborough&repo=github-activity&type=watch&count=true", frameborder:"0", scrolling: "0", width: "110", height: "20"}
-      
-      %iframe{src: "http://ghbtns.com/github-btn.html?user=caseyscarborough&repo=github-activity&type=fork&count=true", frameborder:"0", scrolling: "0", watchidth: "110", height: "20"}
+
+      %div{style: 'text-align:center'}
+        %iframe{src: "http://ghbtns.com/github-btn.html?user=caseyscarborough&repo=github-activity&type=watch&count=true", frameborder:"0", scrolling: "0", width: "140", height: "20"}
+        
+        %iframe{src: "http://ghbtns.com/github-btn.html?user=caseyscarborough&repo=github-activity&type=fork&count=true", frameborder:"0", scrolling: "0", width: "140", height: "20"}
       
       %p
         GitHub Activity Stream an embeddable widget that displays a user's public activity on GitHub. It displays a user's username, name, photo, and a specified number of recent activity updates.
@@ -29,7 +29,7 @@
         A demo of the activity stream is shown below:<br />
       
       .github-activity
-        %iframe{class: "gha-frame", src: "/caseyscarborough", frameborder: "0", width: "100%", height: "400px"}
+        %iframe{class: "gha-frame", src: "/caseyscarborough", frameborder: "0", width: "100%", height: "400px", style: 'border:1px solid #ddd;border-radius:4px'}
         <br /><br />
 
       %p
