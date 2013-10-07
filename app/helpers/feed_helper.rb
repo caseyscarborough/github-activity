@@ -38,6 +38,8 @@ module FeedHelper
       "icon-download"
     elsif type == "GollumEvent"
       "icon-info"
+    elsif type == "ReleaseEvent"
+      "icon-cloud-download"
     else
       "icon-github-alt"
     end

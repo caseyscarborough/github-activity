@@ -126,6 +126,11 @@
             commented on commit #{link_to "#{repo.name}@#{p['comment']['commit_id'][0..9]}", p['comment']['html_url']}<br />
             %small= truncate(p.comment.body, length: 159)
 
+          - elsif type == 'ReleaseEvent'
+            released #{link_to p.release.name, p.release.html_url} at #{link_to repo.name, github_link(repo.name)}<br />
+            %small
+              #{link_to "Download Source Code (zip)", "#{github_link(repo.name)}/archive/#{p.release.tag_name}.zip" }
+
           - else 
             interacted with #{link_to repo.name, github_link(repo.name)}
 
