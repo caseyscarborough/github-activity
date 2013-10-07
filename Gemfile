@@ -15,7 +15,7 @@ gem 'htmlentities'
 gem 'haml'
 gem 'spinjs-rails'
 gem 'font-awesome-rails'
-gem 'octokit'
+gem 'octokit', '1.25'
 
 group :development do
   gem 'capistrano'

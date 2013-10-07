@@ -178,7 +178,7 @@ DEPENDENCIES
   htmlentities
   jbuilder (~> 1.2)
   jquery-rails
-  octokit
+  octokit (= 1.25)
   rails (= 4.0.0)
   rspec-rails
   rvm-capistrano
