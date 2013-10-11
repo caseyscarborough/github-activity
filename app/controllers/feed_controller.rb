@@ -8,7 +8,9 @@ class FeedController < ApplicationController
     @limit = params[:limit]
     begin
       @user = Octokit.user @username
-      @events = Octokit.user_public_events(@username)
+      @events = events(1)
+      @events.concat(events(2))
+      @events.concat(events(3))
     rescue
       flash.now[:error] = "#{params[:username]} does not exist."
     end
@@ -24,6 +26,10 @@ class FeedController < ApplicationController
     rescue
       flash.now[:error] = "#{params[:username]} does not exist."
     end
+  end
+
+  def events(page)
+    Octokit.user_public_events(@username, :page => page)
   end
 
 end
