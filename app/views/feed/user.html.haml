@@ -88,7 +88,7 @@
 
           - elsif type == 'GistEvent' 
             - if p.gist
-              #{p.action}d #{link_to "gist: #{p.gist.id}", p.gist.html_url}
+              #{p.action == 'fork' ? 'forked' : p.action + 'd'} #{link_to "gist: #{p.gist.id}", p.gist.html_url}
             - elsif p['url']
               #{p.action}d #{link_to p.name, p.url}
 
