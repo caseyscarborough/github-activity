@@ -1,0 +1,153 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  background: white;
+}
+
+h1, h2, h3, p, ul, li {
+  margin: 0;
+  padding: 0;
+}
+
+i {
+  font-size: 30px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  line-height: 1.4;
+  list-style-type: none;
+}
+
+small {
+  font-size: 13px;
+  font-weight: normal;
+  color: #666;
+}
+
+small a {
+  font-weight: normal;
+  .more-commits { font-size: 11px; }
+}
+
+span.time { 
+  font-size: 12px;
+  font-weight: normal;
+  color: #bbb; 
+}
+
+a {
+  color: #4183c4;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.info {
+  margin: 15px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: normal;
+  color: #6d6d4b;
+  background: #ffffde;
+  border: 1px solid #e4e4c6;
+  border-radius: 4px;
+}
+
+.without-name {
+  padding-top: 20px;
+  padding-left: 15px;
+}
+
+.github-icon {
+  width: 35px;
+  float: left;
+  display: inline;
+  font-size: 36px;
+  color: #495961;
+  padding: 9px 0 0;
+}
+
+.gravatar {
+  width: 60px;
+  height: 67px;
+  float: right;
+  display: inline;
+  margin-right: 10px;
+  padding-right: 20px;
+}
+
+.gravatar .img {
+  width: 100%;
+  padding: 3px;
+  border: 1px solid #ddd;
+  box-shadow: 1px 1px 3px #ccc;
+}
+
+.activity {
+  clear: both;
+  width: 100%;
+}
+
+.repo {
+  clear: both;
+  padding: 10px 0;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+}
+
+.activity-icon {
+  float: left;
+  clear: both;
+  margin: 6px auto;
+  display: inline;
+  color: #bbb; 
+  width: 35px;
+  text-align: center;
+}
+
+.time {
+  color: #bbb;
+}
+
+.message {
+  width: 90%;
+  float: left;
+  display: inline-block;
+}
+
+.sha {
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+  font-weight: normal;
+}
+
+.clear {
+  clear: both;
+}
+
+.muted {
+  color: #666;
+}
+
+pre {
+  padding: 0;
+  color: white;
+  border-radius: 0;
+  box-shadow: 1px 1px 4px #bbb;
+  border: 0;
+}
