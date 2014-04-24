@@ -5,50 +5,45 @@ var templates = {
                     <div class="clear"></div>\
                   </div>',
   'CreateEvent': '<div class="single-line-small">\
-                    <a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> created branch\
-                    <a href="{{githubUrl}}/{{repo.name}}/tree/{{branch}}">{{branch}}</a> at\
-                    <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>\
+                    {{{userLink}}} created branch <a href="{{githubUrl}}/{{repo.name}}/tree/{{branch}}">{{branch}}</a> at {{{repoLink}}}\
                   </div>',
   'ForkEvent':   '<div class="single-line-small">\
-                    <a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> forked\
-                    <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a> to\
+                    {{{userLink}}} forked {{{repoLink}}} to\
                     <a href="{{githubUrl}}/{{payload.forkee.full_name}}">{{payload.forkee.full_name}}</a>\
                   </div>',
-  'PublicEvent': '<div class="single-line">\
-                    <a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> open sourced\
-                    <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>\
-                  </div>',
-  'PushEvent':   '<a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> pushed to\
-                  <a href="{{githubUrl}}/{{repo.name}}/tree/{{branch}}">{{branch}}</a> at\
-                  <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>\
+  'IssueCommentEvent': '{{{userLink}}} commented on issue {{{issueLink}}}<br>{{{smallGravatar}}}<small>{{{comment}}}</small>',
+  'PublicEvent': '<div class="single-line">{{{userLink}}} open sourced {{{repoLink}}}</div>',
+  'PushEvent':   '{{{userLink}}} pushed to {{{branchLink}}} at {{{repoLink}}}\
                   <ul>\
                     {{#payload.commits}}\
                     <li><small><a class="sha" href="{{githubUrl}}/{{repo.name}}/commit/{{sha}}">{{shortSha}}</a> {{message}}</small></li>\
                     {{/payload.commits}}\
                   </ul>',
-  'WatchEvent':  '<div class="single-line-small">\
-                    <a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> starred\
-                    <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>\
-                  </div>'
+  'WatchEvent':  '<div class="single-line-small">{{{userLink}}} starred {{{repoLink}}}</div>'
 };
 
 var icons = {
   'CreateEvent': 'fa-plus small',
-  'ForkEvent':   'fa-code-fork small',
+  'ForkEvent': 'fa-code-fork small',
+  'IssueCommentEvent': 'fa-comments',
   'PublicEvent': 'fa-globe',
-  'PushEvent':   'fa-arrow-circle-o-up',
-  'WatchEvent':  'fa-star small'
+  'PushEvent': 'fa-arrow-circle-o-up',
+  'WatchEvent': 'fa-star small'
 }
 
 function getMessageFor(data) {
-  data.githubUrl = 'https://github.com';
+  data.userLink = Mustache.render('<a href="https://github.com/{{username}}">{{username}}</a>', { "username": data.actor.login });
+  data.repoLink = Mustache.render('<a href="https://github.com/{{repo}}">{{repo}}</a>', { "repo": data.repo.name });
+  data.smallGravatar = Mustache.render('<img src="{{url}}" class="gravatar-small">', { "url": data.actor.avatar_url });
 
+  // Get the branch name if it exists.
   if (data.payload.ref) {
     if (data.payload.ref.substring(0,10) === 'refs/heads/') {
       data.branch = data.payload.ref.substring(11);
     } else {
       data.branch = data.payload.ref;
     }
+    data.branchLink = Mustache.render('<a href="https://github.com/{{repo.name}}/tree/{{branch}}">{{branch}}</a>', { "branch": data.branch });
   }
 
   // Only show the first 6 characters of the SHA of each commit if given.
@@ -56,6 +51,18 @@ function getMessageFor(data) {
     $.each(data.payload.commits, function(i, d) {
       d.shortSha = d.sha.substring(0,6);
     });
+  }
+
+  if (data.payload.issue) {
+    data.issueLink = Mustache.render('<a href="{{url}}">{{issue}}</a>', { "url": data.payload.issue.html_url, issue: data.repo.name + "#" + data.payload.issue.number });
+  }
+
+  // Get the comment if one exists, and trim it to 150 characters.
+  if (data.payload.comment && data.payload.comment.body) {
+    data.comment = data.payload.comment.body;
+    if (data.comment.length > 150) {
+      data.comment = data.comment.substring(0, 150) + '...';
+    }
   }
 
   var message = Mustache.render(templates[data.type], data);

@@ -168,3 +168,9 @@ pre {
 .single-line-small a {
   font-weight: normal;
 }
+
+.gravatar-small {
+  width: 30px;
+  float: left;
+  margin-right: 6px;
+}
