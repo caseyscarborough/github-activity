@@ -2,9 +2,17 @@ var templates = {
   'Activity':    '<div class="activity">\
                     <div class="activity-icon"><i class="fa {{icon}}"></i></div>\
                     <div class="message">{{{message}}}</div>\
+                  </div>\
+                  <div class="clear">',
+  'CreateEvent': '<div class="single-line-small">\
+                    <a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> created branch\
+                    <a href="{{githubUrl}}/{{repo.name}}/tree/{{branch}}">{{branch}}</a> at\
+                    <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>\
                   </div>',
-  'PublicEvent': '<a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> open sourced\
-                  <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>',
+  'PublicEvent': '<div class="single-line">\
+                    <a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> open sourced\
+                    <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>\
+                  </div>',
   'PushEvent':   '<a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> pushed to\
                   <a href="{{githubUrl}}/{{repo.name}}/tree/{{branch}}">{{branch}}</a> at\
                   <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>\
@@ -17,15 +25,19 @@ var templates = {
 
 var icons = {
   'PublicEvent': 'fa-globe',
-  'PushEvent':   'fa-arrow-circle-o-up'
+  'PushEvent':   'fa-arrow-circle-o-up',
+  'CreateEvent': 'fa-plus'
 }
 
 function getMessageFor(data) {
   data.githubUrl = 'https://github.com';
 
-  // Remove 'refs/heads/' from the payload.ref to get the branch name.
   if (data.payload.ref) {
-    data.branch = data.payload.ref.substring(11);
+    if (data.payload.ref.substring(0,10) === 'refs/heads/') {
+      data.branch = data.payload.ref.substring(11);
+    } else {
+      data.branch = data.payload.ref;
+    }
   }
 
   // Only show the first 6 characters of the SHA of each commit if given.
