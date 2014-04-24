@@ -9,6 +9,11 @@ var templates = {
                     <a href="{{githubUrl}}/{{repo.name}}/tree/{{branch}}">{{branch}}</a> at\
                     <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>\
                   </div>',
+  'ForkEvent':   '<div class="single-line-small">\
+                    <a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> forked\
+                    <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a> to\
+                    <a href="{{githubUrl}}/{{payload.forkee.full_name}}">{{payload.forkee.full_name}}</a>\
+                  </div>',
   'PublicEvent': '<div class="single-line">\
                     <a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> open sourced\
                     <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>\
@@ -28,9 +33,10 @@ var templates = {
 };
 
 var icons = {
+  'CreateEvent': 'fa-plus small',
+  'ForkEvent':   'fa-code-fork small',
   'PublicEvent': 'fa-globe',
   'PushEvent':   'fa-arrow-circle-o-up',
-  'CreateEvent': 'fa-plus small',
   'WatchEvent':  'fa-star small'
 }
 
@@ -60,7 +66,7 @@ function getMessageFor(data) {
 
 var GitHubActivity = (function() {
   this.feed = function(username, targetSelector) {
-    $.getJSON('https://api.github.com/users/' + username + '/events?client_id=4c37e445b8ed8635dbcc&client_secret=a3152ff17d859f138428abb51cd78df425dbea28', function(data) {
+    $.getJSON('https://api.github.com/users/' + username + '/events', function(data) {
       $.each(data, function(i, d) {
         var rendered = getMessageFor(d)
         $(targetSelector).append(rendered);
