@@ -4,6 +4,12 @@ var templates = {
                     <div class="message">{{{message}}}</div>\
                     <div class="clear"></div>\
                   </div>',
+  'UserHeader':  '<div class="header">\
+                    <div class="github-icon"><i class="fa fa-github"></i></div>\
+                    <div class="user-info">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
+                    <div class="gravatar">{{{gravatarLink}}}</div>\
+                  </div>\
+                  <div class="push"></div>',
   'CreateEvent': '<div class="single-line-small">\
                     {{{userLink}}} created branch <a href="{{githubUrl}}/{{repo.name}}/tree/{{branch}}">{{branch}}</a> at {{{repoLink}}}\
                   </div>',
@@ -32,13 +38,14 @@ var icons = {
 }
 
 function getMessageFor(data) {
+  data.githubUrl = "https://github.com"
   data.userLink = Mustache.render('<a href="https://github.com/{{username}}">{{username}}</a>', { "username": data.actor.login });
   data.repoLink = Mustache.render('<a href="https://github.com/{{repo}}">{{repo}}</a>', { "repo": data.repo.name });
   data.smallGravatar = Mustache.render('<img src="{{url}}" class="gravatar-small">', { "url": data.actor.avatar_url });
 
   // Get the branch name if it exists.
   if (data.payload.ref) {
-    if (data.payload.ref.substring(0,10) === 'refs/heads/') {
+    if (data.payload.ref.substring(0, 11) === 'refs/heads/') {
       data.branch = data.payload.ref.substring(11);
     } else {
       data.branch = data.payload.ref;
@@ -49,7 +56,7 @@ function getMessageFor(data) {
   // Only show the first 6 characters of the SHA of each commit if given.
   if (data.payload.commits) {
     $.each(data.payload.commits, function(i, d) {
-      d.shortSha = d.sha.substring(0,6);
+      d.shortSha = d.sha.substring(0, 6);
     });
   }
 
@@ -73,6 +80,16 @@ function getMessageFor(data) {
 
 var GitHubActivity = (function() {
   this.feed = function(username, targetSelector) {
+    
+    $.getJSON('https://api.github.com/users/' + username, function(data) {
+      data.userNameLink = Mustache.render('<a href="{{url}}">{{name}}</a>', { "url": data.html_url, "name": data.name });
+      data.userLink = Mustache.render('<a href="{{url}}">{{username}}</a>', { "url": data.html_url, "username": data.login });
+      data.gravatarLink = Mustache.render('<a href="{{url}}"><img src="{{gravatarUrl}}"></a>', { "url": data.html_url, "gravatarUrl": data.avatar_url });
+
+      var rendered = Mustache.render(templates['UserHeader'], data);
+      $(targetSelector).append(rendered);
+    });
+
     $.getJSON('https://api.github.com/users/' + username + '/events', function(data) {
       $.each(data, function(i, d) {
         var rendered = getMessageFor(d)
