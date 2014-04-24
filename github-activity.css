@@ -106,6 +106,8 @@ pre {
 .activity {
   clear: both;
   width: 100%;
+  border-bottom: 1px solid #ddd;
+  padding: 5px 0;
 }
 
 .repo {
@@ -124,6 +126,10 @@ pre {
   width: 35px;
   text-align: center;
   font-size: 30px;
+}
+
+.activity-icon .small {
+  font-size: 16px;
 }
 
 .time {
@@ -156,5 +162,9 @@ pre {
 .single-line-small {
   font-size: 13px;
   font-weight: normal;
-  margin-top: 10px;
+  margin-top: 5px;
+}
+
+.single-line-small a {
+  font-weight: normal;
 }

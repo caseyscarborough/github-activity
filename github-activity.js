@@ -2,8 +2,8 @@ var templates = {
   'Activity':    '<div class="activity">\
                     <div class="activity-icon"><i class="fa {{icon}}"></i></div>\
                     <div class="message">{{{message}}}</div>\
-                  </div>\
-                  <div class="clear">',
+                    <div class="clear"></div>\
+                  </div>',
   'CreateEvent': '<div class="single-line-small">\
                     <a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> created branch\
                     <a href="{{githubUrl}}/{{repo.name}}/tree/{{branch}}">{{branch}}</a> at\
@@ -20,13 +20,18 @@ var templates = {
                     {{#payload.commits}}\
                     <li><small><a class="sha" href="{{githubUrl}}/{{repo.name}}/commit/{{sha}}">{{shortSha}}</a> {{message}}</small></li>\
                     {{/payload.commits}}\
-                  </ul>'
+                  </ul>',
+  'WatchEvent':  '<div class="single-line-small">\
+                    <a href="{{githubUrl}}/{{actor.login}}">{{actor.login}}</a> starred\
+                    <a href="{{githubUrl}}/{{repo.name}}">{{repo.name}}</a>\
+                  </div>'
 };
 
 var icons = {
   'PublicEvent': 'fa-globe',
   'PushEvent':   'fa-arrow-circle-o-up',
-  'CreateEvent': 'fa-plus'
+  'CreateEvent': 'fa-plus small',
+  'WatchEvent':  'fa-star small'
 }
 
 function getMessageFor(data) {
