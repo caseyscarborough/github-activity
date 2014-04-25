@@ -139,10 +139,6 @@ pre {
   color: #666;
 }
 
-.single-line {
-  margin-top: 9px;
-}
-
 .single-line-small {
   font-size: 13px;
   font-weight: normal;
@@ -205,7 +201,7 @@ pre {
 .user-info p a { font-weight: 100 }
 
 .commits-message { 
-  font-size: 12px; 
+  font-size: 11px; 
 }
 
 .merge-message {

@@ -9,7 +9,9 @@ var templates = {
                     <div class="user-info">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
                     <div class="gravatar">{{{gravatarLink}}}</div>\
                   </div>',
+  'CommitCommentEvent': '{{{userLink}}} commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
   'CreateEvent': '<div class="single-line-small">{{{userLink}}} created {{payload.ref_type}} {{{branchLink}}}{{{repoLink}}}</div>',
+  'DeleteEvent': '<div class="single-line-small">{{{userLink}}} deleted {{payload.ref_type}} {{payload.ref}} at {{{repoLink}}}</div>',
   'ForkEvent':   '<div class="single-line-small">\
                     {{{userLink}}} forked {{{repoLink}}} to\
                     <a href="{{githubUrl}}/{{payload.forkee.full_name}}">{{payload.forkee.full_name}}</a>\
@@ -28,7 +30,9 @@ var templates = {
 };
 
 var icons = {
+  'CommitCommentEvent': 'fa-comments',
   'CreateEvent': 'fa-plus small',
+  'DeleteEvent': 'fa-trash-o small',
   'ForkEvent': 'fa-code-fork small',
   'IssuesEvent': 'fa-check-circle-o',
   'IssueCommentEvent': 'fa-comments',
@@ -98,9 +102,9 @@ function getMessageFor(data) {
         d.shaLink = Mustache.render('<a class="sha" href="https://github.com/{{repo}}/commit/{{sha}}">{{shortSha}}</a>', { repo: data.repo.name, sha: d.sha, shortSha: d.sha.substring(0, 6) });
         d.committerGravatar = Mustache.render('<img class="commit-gravatar" src="https://gravatar.com/avatar/{{hash}}?s=30&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="16" />', { hash: md5(d.author.email) });
       } else {
-        var shaDiff = data.payload.commits[0].sha + '...' + data.payload.commits[length-1].sha
-        data.commitsMessage = Mustache.render('<small class="commits-message"><a href="https://github.com/{{repo}}/compare/{{shaDiff}}">{{length}} more commits &raquo;</a>', { repo: data.repo.name, shaDiff: shaDiff, length: data.payload.commits.length - 2 });
-        data.payload.commits.splice(2, length);
+        var shaDiff = data.payload.before + '...' + data.payload.head
+        data.commitsMessage = Mustache.render('<small class="commits-message"><a href="https://github.com/{{repo}}/compare/{{shaDiff}}">{{length}} more commits &raquo;</a>', { repo: data.repo.name, shaDiff: shaDiff, length: data.payload.size - 2 });
+        data.payload.commits.splice(2, data.payload.size);
         return false;
       }
     });
@@ -131,6 +135,10 @@ function getMessageFor(data) {
     data.comment = data.payload.comment.body;
     if (data.comment.length > 150) {
       data.comment = data.comment.substring(0, 150) + '...';
+    }
+    if (data.payload.comment.html_url && data.payload.comment.commit_id) {
+      var title = data.repo.name + '@' + data.payload.comment.commit_id.substring(0, 10);
+      data.commentLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: data.payload.comment.html_url, title: title });
     }
   }
 
