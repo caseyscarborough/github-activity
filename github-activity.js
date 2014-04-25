@@ -14,8 +14,10 @@ var templates = {
                     {{{userLink}}} forked {{{repoLink}}} to\
                     <a href="{{githubUrl}}/{{payload.forkee.full_name}}">{{payload.forkee.full_name}}</a>\
                   </div>',
-  'IssueCommentEvent': '{{{userLink}}} commented on issue {{{issueLink}}}<br>{{{smallGravatar}}}<small>{{{comment}}}</small>',
+  'IssueCommentEvent': '{{{userLink}}} commented on {{issueType}} {{{issueLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
+  'IssuesEvent': '{{{userLink}}} {{payload.action}} issue {{{issueLink}}}<br>{{{userGravatar}}}<small>{{payload.issue.title}}</small>',
   'PublicEvent': '<div class="single-line">{{{userLink}}} open sourced {{{repoLink}}}</div>',
+  'PullRequestEvent': '{{{userLink}}} {{payload.action}} pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{payload.pull_request.title}}</small>',
   'PushEvent':   '{{{userLink}}} pushed to {{{branchLink}}} at {{{repoLink}}}\
                   <ul>\
                     {{#payload.commits}}\
@@ -28,17 +30,19 @@ var templates = {
 var icons = {
   'CreateEvent': 'fa-plus small',
   'ForkEvent': 'fa-code-fork small',
+  'IssuesEvent': 'fa-check-circle-o',
   'IssueCommentEvent': 'fa-comments',
   'PublicEvent': 'fa-globe',
+  'PullRequestEvent': 'fa-reply',
   'PushEvent': 'fa-arrow-circle-o-up',
   'WatchEvent': 'fa-star small'
 }
 
 function getMessageFor(data) {
   data.githubUrl = "https://github.com"
-  data.userLink = Mustache.render('<a href="https://github.com/{{username}}">{{username}}</a>', { "username": data.actor.login });
-  data.repoLink = Mustache.render('<a href="https://github.com/{{repo}}">{{repo}}</a>', { "repo": data.repo.name });
-  data.smallGravatar = Mustache.render('<img src="{{url}}" class="gravatar-small">', { "url": data.actor.avatar_url });
+  data.userLink = Mustache.render('<a href="https://github.com/{{username}}">{{username}}</a>', { username: data.actor.login });
+  data.repoLink = Mustache.render('<a href="https://github.com/{{repo}}">{{repo}}</a>', { repo: data.repo.name });
+  data.userGravatar = Mustache.render('<img src="{{url}}" class="gravatar-small">', { url: data.actor.avatar_url });
 
   // Get the branch name if it exists.
   if (data.payload.ref) {
@@ -47,7 +51,7 @@ function getMessageFor(data) {
     } else {
       data.branch = data.payload.ref;
     }
-    data.branchLink = Mustache.render('<a href="https://github.com/{{repo.name}}/tree/{{branch}}">{{branch}}</a>', { "branch": data.branch });
+    data.branchLink = Mustache.render('<a href="https://github.com/{{repo.name}}/tree/{{branch}}">{{branch}}</a>', { branch: data.branch });
   }
 
   // Only show the first 6 characters of the SHA of each commit if given.
@@ -58,7 +62,17 @@ function getMessageFor(data) {
   }
 
   if (data.payload.issue) {
-    data.issueLink = Mustache.render('<a href="{{url}}">{{issue}}</a>', { "url": data.payload.issue.html_url, issue: data.repo.name + "#" + data.payload.issue.number });
+    var title = data.repo.name + "#" + data.payload.issue.number;
+    data.issueLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: data.payload.issue.html_url, title: title });
+    data.issueType = "issue";
+    if (data.payload.issue.pull_request) {
+      data.issueType = "pull request";
+    }
+  }
+
+  if (data.payload.pull_request) {
+    var title = data.repo.name + "#" + data.payload.pull_request.number;
+    data.pullRequestLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: data.payload.pull_request.html_url, title: title })
   }
 
   // Get the comment if one exists, and trim it to 150 characters.
@@ -89,9 +103,9 @@ var GitHubActivity = (function() {
     }
     
     $.getJSON(userUrl, function(data) {
-      data.userNameLink = Mustache.render('<a href="{{url}}">{{name}}</a>', { "url": data.html_url, "name": data.name });
-      data.userLink = Mustache.render('<a href="{{url}}">{{username}}</a>', { "url": data.html_url, "username": data.login });
-      data.gravatarLink = Mustache.render('<a href="{{url}}"><img src="{{gravatarUrl}}"></a>', { "url": data.html_url, "gravatarUrl": data.avatar_url });
+      data.userNameLink = Mustache.render('<a href="{{url}}">{{name}}</a>', { url: data.html_url, name: data.name });
+      data.userLink = Mustache.render('<a href="{{url}}">{{username}}</a>', { url: data.html_url, username: data.login });
+      data.gravatarLink = Mustache.render('<a href="{{url}}"><img src="{{gravatarUrl}}"></a>', { url: data.html_url, gravatarUrl: data.avatar_url });
 
       var rendered = Mustache.render(templates['UserHeader'], data);
       $(targetSelector).append(rendered);
