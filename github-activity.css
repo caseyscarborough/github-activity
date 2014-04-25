@@ -176,7 +176,7 @@ pre {
   padding: 10px;
   border-bottom: 1px solid #ddd;
   width: 100%;
-  height: 70px;
+  height: 67px;
   background: #ffffff; /* Old browsers */
   background: -moz-linear-gradient(top,  #ffffff 0%, #f4f4f4 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f4f4f4)); /* Chrome,Safari4+ */
@@ -226,4 +226,10 @@ pre {
   background: #ffffde;
   border: 1px solid #e4e4c6;
   border-radius: 4px;
+}
+
+span.time { 
+  font-size: 12px;
+  font-weight: normal;
+  color: #bbb; 
 }
