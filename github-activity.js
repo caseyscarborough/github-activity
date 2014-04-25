@@ -1,32 +1,42 @@
 var templates = {
-  'Activity':    '<div class="activity">\
-                    <div class="activity-icon"><i class="fa {{icon}}"></i></div>\
-                    <div class="message"><span class="time">{{{timeString}}}<br></span>{{{message}}}</div>\
-                    <div class="clear"></div>\
-                  </div>',
-  'UserHeader':  '<div class="header">\
-                    <div class="github-icon"><i class="fa fa-github"></i></div>\
-                    <div class="user-info">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
-                    <div class="gravatar">{{{gravatarLink}}}</div>\
-                  </div>',
-  'CommitCommentEvent': '{{{userLink}}} commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
+  'Activity': '<div class="activity">\
+                 <div class="activity-icon"><i class="fa {{icon}}"></i></div>\
+                 <div class="message"><span class="time">{{{timeString}}}<br></span>{{{message}}}</div>\
+                 <div class="clear"></div>\
+               </div>',
+  
+  'UserHeader': '<div class="header">\
+                   <div class="github-icon"><i class="fa fa-github"></i></div>\
+                   <div class="user-info">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
+                   <div class="gravatar">{{{gravatarLink}}}</div>\
+                 </div>',
+  
+  'CommitCommentEvent':  '{{{userLink}}} commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
+
   'CreateEvent': '<div class="single-line-small">{{{userLink}}} created {{payload.ref_type}} {{{branchLink}}}{{{repoLink}}}</div>',
+  
   'DeleteEvent': '<div class="single-line-small">{{{userLink}}} deleted {{payload.ref_type}} {{payload.ref}} at {{{repoLink}}}</div>',
-  'ForkEvent':   '<div class="single-line-small">\
-                    {{{userLink}}} forked {{{repoLink}}} to\
-                    <a href="{{githubUrl}}/{{payload.forkee.full_name}}">{{payload.forkee.full_name}}</a>\
-                  </div>',
+  
+  'ForkEvent': '<div class="single-line-small">{{{userLink}}} forked {{{repoLink}}} to<a href="{{githubUrl}}/{{payload.forkee.full_name}}">{{payload.forkee.full_name}}</a></div>',
+  
   'IssueCommentEvent': '{{{userLink}}} commented on {{issueType}} {{{issueLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
+  
   'IssuesEvent': '{{{userLink}}} {{payload.action}} issue {{{issueLink}}}<br>{{{userGravatar}}}<small>{{payload.issue.title}}</small>',
+  
   'PublicEvent': '<div class="single-line">{{{userLink}}} open sourced {{{repoLink}}}</div>',
+  
   'PullRequestEvent': '{{{userLink}}} {{payload.action}} pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{payload.pull_request.title}}</small>{{{mergeMessage}}}',
-  'PushEvent':   '{{{userLink}}} pushed to {{{branchLink}}} at {{{repoLink}}}<br>{{{userGravatar}}}\
-                  <ul class="commits">\
-                    {{#payload.commits}}\
-                    <li><small>{{{committerGravatar}}} {{{shaLink}}} {{message}}</small></li>\
-                    {{/payload.commits}}\
-                  </ul>{{{commitsMessage}}}',
-  'WatchEvent':  '<div class="single-line-small">{{{userLink}}} starred {{{repoLink}}}</div>'
+
+  'PullRequestReviewCommentEvent': '{{{userLink}}} commented on pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
+  
+  'PushEvent': '{{{userLink}}} pushed to {{{branchLink}}}{{{repoLink}}}<br>{{{userGravatar}}}\
+                <ul class="commits">{{#payload.commits}}\
+                  <li><small>{{{committerGravatar}}} {{{shaLink}}} {{message}}</small></li>{{/payload.commits}}\
+                </ul>{{{commitsMessage}}}',
+
+  'ReleaseEvent': '{{{userLink}}} released {{{tagLink}}} at {{{repoLink}}}<br>{{{userGravatar}}}<small><i class="fa fa-download"></i>  {{{zipLink}}}',
+  
+  'WatchEvent': '<div class="single-line-small">{{{userLink}}} starred {{{repoLink}}}</div>'
 };
 
 var icons = {
@@ -38,7 +48,9 @@ var icons = {
   'IssueCommentEvent': 'fa-comments',
   'PublicEvent': 'fa-globe',
   'PullRequestEvent': 'fa-reply',
+  'PullRequestReviewCommentEvent': 'fa-comments',
   'PushEvent': 'fa-arrow-circle-o-up',
+  'ReleaseEvent': 'fa-tags',
   'WatchEvent': 'fa-star small'
 }
 
@@ -121,13 +133,17 @@ function getMessageFor(data) {
 
   if (data.payload.pull_request) {
     var pr = data.payload.pull_request
-    var title = data.repo.name + "#" + pr.number;
-    data.pullRequestLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: pr.html_url, title: title })
+    data.pullRequestLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: data.payload.html_url, title: data.repo.name + "#" + pr.number });
     data.mergeMessage = "";
     if (data.payload.pull_request.merged) {
       data.payload.action = "merged";
       data.mergeMessage = Mustache.render('<br><small class="merge-message">{{c}} commit with {{a}} additions and {{d}} deletions</small>', { c: pr.commits, a: pr.additions, d: pr.deletions })
     }
+  }
+
+  if (data.payload.comment && data.payload.comment.pull_request_url) {
+    var title = data.repo.name + "#" + data.payload.comment.pull_request_url.split('/').pop();
+    data.pullRequestLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: data.payload.comment.pull_request_url, title: title })
   }
 
   // Get the comment if one exists, and trim it to 150 characters.
@@ -140,6 +156,11 @@ function getMessageFor(data) {
       var title = data.repo.name + '@' + data.payload.comment.commit_id.substring(0, 10);
       data.commentLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: data.payload.comment.html_url, title: title });
     }
+  }
+
+  if (data.type === 'ReleaseEvent') {
+    data.tagLink = Mustache.render('<a href="{{url}}">{{title}}</a>', {url: data.payload.release.html_url, title: data.payload.release.tag_name });
+    data.zipLink = Mustache.render('<a href="{{url}}">Source Code (zip)</a>', {url: data.payload.release.zipball_url });
   }
 
   var message = Mustache.render(templates[data.type], data);
