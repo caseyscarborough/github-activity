@@ -159,6 +159,15 @@ pre {
   margin-right: 6px;
 }
 
+.commit-gravatar {
+  margin-bottom: -3px;
+  border-radius: 2px;
+}
+
+.user-gravatar {
+  float: left;
+}
+
 .push {
   height: 89px;
 }
@@ -194,3 +203,27 @@ pre {
 
 .user-info a { color: #495961; }
 .user-info p a { font-weight: 100 }
+
+.commits-message { 
+  font-size: 12px; 
+}
+
+.merge-message {
+  background: #e8f1f6;
+  border-radius: 3px;
+  font-size: 12px;
+  padding: 3px 7px;
+  line-height: 2.0;
+  color: rgba(0,0,0,0.5);
+}
+
+.info {
+  margin: 15px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: normal;
+  color: #6d6d4b;
+  background: #ffffde;
+  border: 1px solid #e4e4c6;
+  border-radius: 4px;
+}
