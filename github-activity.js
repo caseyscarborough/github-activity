@@ -8,11 +8,8 @@ var templates = {
                     <div class="github-icon"><i class="fa fa-github"></i></div>\
                     <div class="user-info">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
                     <div class="gravatar">{{{gravatarLink}}}</div>\
-                  </div>\
-                  <div class="push"></div>',
-  'CreateEvent': '<div class="single-line-small">\
-                    {{{userLink}}} created branch <a href="{{githubUrl}}/{{repo.name}}/tree/{{branch}}">{{branch}}</a> at {{{repoLink}}}\
                   </div>',
+  'CreateEvent': '<div class="single-line-small">{{{userLink}}} created branch {{{branchLink}}} at {{{repoLink}}}</div>',
   'ForkEvent':   '<div class="single-line-small">\
                     {{{userLink}}} forked {{{repoLink}}} to\
                     <a href="{{githubUrl}}/{{payload.forkee.full_name}}">{{payload.forkee.full_name}}</a>\
@@ -79,21 +76,31 @@ function getMessageFor(data) {
 }
 
 var GitHubActivity = (function() {
-  this.feed = function(username, targetSelector) {
+  this.feed = function(username, targetSelector, clientId, clientSecret) {
+    $(targetSelector).css('overflow-y', 'scroll');
+
+    var userUrl   = 'https://api.github.com/users/' + username;
+    var eventsUrl = userUrl + '/events';
+
+    if (clientId && clientSecret) {
+      var authString = '?client_id=' + clientId + '&client_secret=' + clientSecret;
+      userUrl   += authString;
+      eventsUrl += authString
+    }
     
-    $.getJSON('https://api.github.com/users/' + username, function(data) {
+    $.getJSON(userUrl, function(data) {
       data.userNameLink = Mustache.render('<a href="{{url}}">{{name}}</a>', { "url": data.html_url, "name": data.name });
       data.userLink = Mustache.render('<a href="{{url}}">{{username}}</a>', { "url": data.html_url, "username": data.login });
       data.gravatarLink = Mustache.render('<a href="{{url}}"><img src="{{gravatarUrl}}"></a>', { "url": data.html_url, "gravatarUrl": data.avatar_url });
 
       var rendered = Mustache.render(templates['UserHeader'], data);
       $(targetSelector).append(rendered);
-    });
-
-    $.getJSON('https://api.github.com/users/' + username + '/events', function(data) {
-      $.each(data, function(i, d) {
-        var rendered = getMessageFor(d)
-        $(targetSelector).append(rendered);
+    }).done(function() {
+      $.getJSON(eventsUrl, function(data) {
+        $.each(data, function(i, d) {
+          var rendered = getMessageFor(d)
+          $(targetSelector).append(rendered);
+        });
       });
     });
   }
