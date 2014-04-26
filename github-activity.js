@@ -8,7 +8,8 @@ var templates = {
                    <div class="github-icon"><i class="fa fa-github"></i></div>\
                    <div class="user-info">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
                    <div class="gravatar">{{{gravatarLink}}}</div>\
-                 </div>',
+                 </div><div class="push"></div>',
+  'Footer':     '<div class="footer">Public Activity <a href="https://github.com/caseyscarborough/github-activity" target="_blank">GitHub Activity Stream</a>',
   'CommitCommentEvent': '{{{userLink}}} commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
   'CreateEvent': '<div class="single-line-small">{{{userLink}}} created {{payload.ref_type}} {{{branchLink}}}{{{repoLink}}}</div>',
   'DeleteEvent': '<div class="single-line-small">{{{userLink}}} deleted {{payload.ref_type}} {{payload.ref}} at {{{repoLink}}}</div>',
@@ -116,6 +117,9 @@ function getMessageFor(data) {
     }
 
     $.each(data.payload.commits, function(i, d) {
+      if (d.message.length > 66) {
+        d.message = d.message.substring(0, 66) + '...';
+      }
       if (i < 2) {
         d.shaLink = renderGitHubLink(data.repo.name + '/commit/' + d.sha, d.sha.substring(0, 6), 'sha');
         d.committerGravatar = Mustache.render('<img class="gravatar-commit" src="https://gravatar.com/avatar/{{hash}}?s=30&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="16" />', { hash: md5(d.author.email) });
@@ -182,14 +186,18 @@ function getMessageFor(data) {
 }
 
 var GitHubActivity = (function() {
-  this.feed = function(username, targetSelector, clientId, clientSecret) {
-    $(targetSelector).css('overflow-y', 'scroll');
+  this.feed = function(options) {
+    if (!options.username || !options.selector) {
+      return false;
+    }
+    var selector = options.selector;
+    $(selector).html('');
 
-    var userUrl   = 'https://api.github.com/users/' + username;
+    var userUrl   = 'https://api.github.com/users/' + options.username;
     var eventsUrl = userUrl + '/events';
 
-    if (clientId && clientSecret) {
-      var authString = '?client_id=' + clientId + '&client_secret=' + clientSecret;
+    if (options.clientId && options.clientSecret) {
+      var authString = '?client_id=' + options.clientId + '&client_secret=' + options.clientSecret;
       userUrl   += authString;
       eventsUrl += authString
     }
@@ -200,16 +208,18 @@ var GitHubActivity = (function() {
       data.gravatarLink = renderLink(data.html_url, '<img src="' + data.avatar_url + '">');
 
       var rendered = Mustache.render(templates['UserHeader'], data);
-      $(targetSelector).append(rendered);
+      $(selector).append(rendered);
     }).done(function() {
       $.getJSON(eventsUrl, function(data) {
         $.each(data, function(i, d) {
           var rendered = getMessageFor(d)
-          $(targetSelector).append(rendered);
+          $(selector).append(rendered);
         });
       }).done(function() {
+        $(selector).css('position', 'relative');
+        $(selector).wrapInner('<div class="github-activity-feed"></div>');
+        $('.github-activity-feed').append('<div class="push-small"></div>' + templates['Footer']);
         $('.single-line-small').prev().css('display', 'none');
-        $(targetSelector).wrapInner('<div class="github-activity-feed"></div>');
       });
     });
   }
