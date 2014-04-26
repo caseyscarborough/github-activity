@@ -4,38 +4,25 @@ var templates = {
                  <div class="message"><span class="time">{{{timeString}}}<br></span>{{{message}}}</div>\
                  <div class="clear"></div>\
                </div>',
-  
   'UserHeader': '<div class="header">\
                    <div class="github-icon"><i class="fa fa-github"></i></div>\
                    <div class="user-info">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
                    <div class="gravatar">{{{gravatarLink}}}</div>\
                  </div>',
-  
-  'CommitCommentEvent':  '{{{userLink}}} commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
-
+  'CommitCommentEvent': '{{{userLink}}} commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
   'CreateEvent': '<div class="single-line-small">{{{userLink}}} created {{payload.ref_type}} {{{branchLink}}}{{{repoLink}}}</div>',
-  
   'DeleteEvent': '<div class="single-line-small">{{{userLink}}} deleted {{payload.ref_type}} {{payload.ref}} at {{{repoLink}}}</div>',
-  
   'ForkEvent': '<div class="single-line-small">{{{userLink}}} forked {{{repoLink}}} to<a href="{{githubUrl}}/{{payload.forkee.full_name}}">{{payload.forkee.full_name}}</a></div>',
-  
   'IssueCommentEvent': '{{{userLink}}} commented on {{issueType}} {{{issueLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
-  
   'IssuesEvent': '{{{userLink}}} {{payload.action}} issue {{{issueLink}}}<br>{{{userGravatar}}}<small>{{payload.issue.title}}</small>',
-  
   'PublicEvent': '<div class="single-line">{{{userLink}}} open sourced {{{repoLink}}}</div>',
-  
   'PullRequestEvent': '{{{userLink}}} {{payload.action}} pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{payload.pull_request.title}}</small>{{{mergeMessage}}}',
-
-  'PullRequestReviewCommentEvent': '{{{userLink}}} commented on pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
-  
+  'PullRequestReviewCommentEvent': '{{{userLink}}} commented on pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',  
   'PushEvent': '{{{userLink}}} pushed to {{{branchLink}}}{{{repoLink}}}<br>{{{userGravatar}}}\
                 <ul class="commits">{{#payload.commits}}\
                   <li><small>{{{committerGravatar}}} {{{shaLink}}} {{message}}</small></li>{{/payload.commits}}\
                 </ul>{{{commitsMessage}}}',
-
   'ReleaseEvent': '{{{userLink}}} released {{{tagLink}}} at {{{repoLink}}}<br>{{{userGravatar}}}<small><i class="fa fa-download"></i>  {{{zipLink}}}',
-  
   'WatchEvent': '<div class="single-line-small">{{{userLink}}} starred {{{repoLink}}}</div>'
 };
 
@@ -62,37 +49,42 @@ function millisecondsToStr(milliseconds) {
         return (number > 1) ? 's ago' : ' ago';
     }
     var temp = Math.floor(milliseconds / 1000);
+
     var years = Math.floor(temp / 31536000);
-    if (years) {
-        return years + ' year' + numberEnding(years);
-    }
+    if (years) return years + ' year' + numberEnding(years);
+
     var months = Math.floor((temp %= 31536000) / 2592000);
-    if (months) {
-      return months + ' month' + numberEnding(months);
-    }
+    if (months) return months + ' month' + numberEnding(months);
+
     var days = Math.floor((temp %= 2592000) / 86400);
-    if (days) {
-        return days + ' day' + numberEnding(days);
-    }
+    if (days) return days + ' day' + numberEnding(days);
+
     var hours = Math.floor((temp %= 86400) / 3600);
-    if (hours) {
-        return hours + ' hour' + numberEnding(hours);
-    }
+    if (hours) return hours + ' hour' + numberEnding(hours);
+
     var minutes = Math.floor((temp %= 3600) / 60);
-    if (minutes) {
-        return minutes + ' minute' + numberEnding(minutes);
-    }
+    if (minutes) return minutes + ' minute' + numberEnding(minutes);
+
     var seconds = temp % 60;
-    if (seconds) {
-        return seconds + ' second' + numberEnding(seconds);
-    }
-    return 'just now';
+    if (seconds) return seconds + ' second' + numberEnding(seconds);
+
+    return 'Just now';
+}
+
+function renderLink(url, title, cssClass) {
+  return Mustache.render('<a class="' + cssClass + '" href="{{url}}">{{{title}}}</a>', { url: url, title: title });
+}
+
+function renderGitHubLink(url, title, cssClass) {
+  if (!title) title = url;
+  if (typeof(cssClass) === 'undefined') cssClass = "";
+  return renderLink('https://github.com/' + url, title, cssClass);
 }
 
 function getMessageFor(data) {
   data.githubUrl = "https://github.com"
-  data.userLink = Mustache.render('<a href="https://github.com/{{username}}">{{username}}</a>', { username: data.actor.login });
-  data.repoLink = Mustache.render('<a href="https://github.com/{{repo}}">{{repo}}</a>', { repo: data.repo.name });
+  data.userLink = renderGitHubLink(data.actor.login);
+  data.repoLink = renderGitHubLink(data.repo.name);
   data.userGravatar = Mustache.render('<div class="user-gravatar"><img src="{{url}}" class="gravatar-small"></div>', { url: data.actor.avatar_url });
 
   // Get the branch name if it exists.
@@ -102,7 +94,7 @@ function getMessageFor(data) {
     } else {
       data.branch = data.payload.ref;
     }
-    data.branchLink = Mustache.render('<a href="https://github.com/{{repo}}/tree/{{branch}}">{{branch}}</a> at ', { repo: data.repo.name, branch: data.branch });
+    data.branchLink = renderGitHubLink(data.repo.name + '/tree/' + data.branch, data.branch) + ' at ';
   }
 
   // Only show the first 6 characters of the SHA of each commit if given.
@@ -111,7 +103,7 @@ function getMessageFor(data) {
     var length = data.payload.commits.length;
     $.each(data.payload.commits, function(i, d) {
       if (i <= 2) {
-        d.shaLink = Mustache.render('<a class="sha" href="https://github.com/{{repo}}/commit/{{sha}}">{{shortSha}}</a>', { repo: data.repo.name, sha: d.sha, shortSha: d.sha.substring(0, 6) });
+        d.shaLink = renderGitHubLink(data.repo.name + '/commit/' + d.sha, d.sha.substring(0, 6), 'sha');
         d.committerGravatar = Mustache.render('<img class="commit-gravatar" src="https://gravatar.com/avatar/{{hash}}?s=30&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="16" />', { hash: md5(d.author.email) });
       } else {
         var shaDiff = data.payload.before + '...' + data.payload.head
@@ -122,28 +114,33 @@ function getMessageFor(data) {
     });
   }
 
+  // Get the link if this is an IssueEvent.
   if (data.payload.issue) {
     var title = data.repo.name + "#" + data.payload.issue.number;
-    data.issueLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: data.payload.issue.html_url, title: title });
+    data.issueLink = renderLink(data.payload.issue.html_url, title);
     data.issueType = "issue";
     if (data.payload.issue.pull_request) {
       data.issueType = "pull request";
     }
   }
 
+  // Retrieve the pull request link if this is a PullRequestEvent.
   if (data.payload.pull_request) {
     var pr = data.payload.pull_request
-    data.pullRequestLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: data.payload.html_url, title: data.repo.name + "#" + pr.number });
+    data.pullRequestLink = renderLink(data.payload.html_url, data.repo.name + "#" + pr.number);
     data.mergeMessage = "";
+
+    // If this was a merge, set the merge message.
     if (data.payload.pull_request.merged) {
       data.payload.action = "merged";
       data.mergeMessage = Mustache.render('<br><small class="merge-message">{{c}} commit with {{a}} additions and {{d}} deletions</small>', { c: pr.commits, a: pr.additions, d: pr.deletions })
     }
   }
 
+  // Get the link if this is a PullRequestReviewCommentEvent
   if (data.payload.comment && data.payload.comment.pull_request_url) {
     var title = data.repo.name + "#" + data.payload.comment.pull_request_url.split('/').pop();
-    data.pullRequestLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: data.payload.comment.pull_request_url, title: title })
+    data.pullRequestLink = renderGitHubLink(data.payload.comment.pull_request_url, title);
   }
 
   // Get the comment if one exists, and trim it to 150 characters.
@@ -154,13 +151,13 @@ function getMessageFor(data) {
     }
     if (data.payload.comment.html_url && data.payload.comment.commit_id) {
       var title = data.repo.name + '@' + data.payload.comment.commit_id.substring(0, 10);
-      data.commentLink = Mustache.render('<a href="{{url}}">{{title}}</a>', { url: data.payload.comment.html_url, title: title });
+      data.commentLink = renderLink(data.payload.comment.html_url, title);
     }
   }
 
   if (data.type === 'ReleaseEvent') {
-    data.tagLink = Mustache.render('<a href="{{url}}">{{title}}</a>', {url: data.payload.release.html_url, title: data.payload.release.tag_name });
-    data.zipLink = Mustache.render('<a href="{{url}}">Source Code (zip)</a>', {url: data.payload.release.zipball_url });
+    data.tagLink = renderLink(data.payload.release.html_url, data.payload.release.tag_name);
+    data.zipLink = renderLink(data.payload.release.zipball_url, 'Download Source Code (zip)');
   }
 
   var message = Mustache.render(templates[data.type], data);
@@ -184,9 +181,9 @@ var GitHubActivity = (function() {
     }
     
     $.getJSON(userUrl, function(data) {
-      data.userNameLink = Mustache.render('<a href="{{url}}">{{name}}</a>', { url: data.html_url, name: data.name });
-      data.userLink = Mustache.render('<a href="{{url}}">{{username}}</a>', { url: data.html_url, username: data.login });
-      data.gravatarLink = Mustache.render('<a href="{{url}}"><img src="{{gravatarUrl}}"></a>', { url: data.html_url, gravatarUrl: data.avatar_url });
+      data.userNameLink = renderLink(data.html_url, data.name);
+      data.userLink = renderLink(data.html_url, data.login);
+      data.gravatarLink = renderLink(data.html_url, '<img src="' + data.avatar_url + '">');
 
       var rendered = Mustache.render(templates['UserHeader'], data);
       $(targetSelector).append(rendered);
