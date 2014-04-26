@@ -1,7 +1,7 @@
 var templates = {
   'Activity': '<div class="activity">\
                  <div class="activity-icon"><i class="fa {{icon}}"></i></div>\
-                 <div class="message"><span class="time">{{{timeString}}}<br></span>{{{message}}}</div>\
+                 <div class="message"><div class="time">{{{timeString}}}</div>{{{message}}}</div>\
                  <div class="clear"></div>\
                </div>',
   'UserHeader': '<div class="header">\
@@ -60,7 +60,7 @@ function millisecondsToStr(milliseconds) {
     if (days) return days + ' day' + numberEnding(days);
 
     var hours = Math.floor((temp %= 86400) / 3600);
-    if (hours) return hours + ' hour' + numberEnding(hours);
+    if (hours) return 'about ' + hours + ' hour' + numberEnding(hours);
 
     var minutes = Math.floor((temp %= 3600) / 60);
     if (minutes) return minutes + ' minute' + numberEnding(minutes);
@@ -68,7 +68,13 @@ function millisecondsToStr(milliseconds) {
     var seconds = temp % 60;
     if (seconds) return seconds + ' second' + numberEnding(seconds);
 
-    return 'Just now';
+    return 'just now';
+}
+
+function pluralize(word, number) {
+  // Yeah I know, this sucks.
+  if (number !== 1) return word + 's';
+  return word;
 }
 
 function renderLink(url, title, cssClass) {
@@ -85,7 +91,7 @@ function getMessageFor(data) {
   data.githubUrl = "https://github.com"
   data.userLink = renderGitHubLink(data.actor.login);
   data.repoLink = renderGitHubLink(data.repo.name);
-  data.userGravatar = Mustache.render('<div class="user-gravatar"><img src="{{url}}" class="gravatar-small"></div>', { url: data.actor.avatar_url });
+  data.userGravatar = Mustache.render('<div class="gravatar-user"><img src="{{url}}" class="gravatar-small"></div>', { url: data.actor.avatar_url });
 
   // Get the branch name if it exists.
   if (data.payload.ref) {
@@ -99,15 +105,22 @@ function getMessageFor(data) {
 
   // Only show the first 6 characters of the SHA of each commit if given.
   if (data.payload.commits) {
-    data.commitsMessage = "";
+    var shaDiff = data.payload.before + '...' + data.payload.head
     var length = data.payload.commits.length;
+    if (length === 2) {
+      // If there are 2 commits, show message 'View comparison for these 2 commits >>'
+      data.commitsMessage = Mustache.render('<small class="message-commits"><a href="https://github.com/{{repo}}/compare/{{shaDiff}}">View comparison for these 2 commits &raquo;</a>', { repo: data.repo.name, shaDiff: shaDiff });
+    } else if (length > 2) {
+      // If there are more than two, show message '(numberOfCommits - 2) more commits >>'
+      data.commitsMessage = Mustache.render('<small class="message-commits"><a href="https://github.com/{{repo}}/compare/{{shaDiff}}">{{length}} more ' + pluralize('commit', length - 2) + ' &raquo;</a>', { repo: data.repo.name, shaDiff: shaDiff, length: data.payload.size - 2 });
+    }
+
     $.each(data.payload.commits, function(i, d) {
-      if (i <= 2) {
+      if (i < 2) {
         d.shaLink = renderGitHubLink(data.repo.name + '/commit/' + d.sha, d.sha.substring(0, 6), 'sha');
-        d.committerGravatar = Mustache.render('<img class="commit-gravatar" src="https://gravatar.com/avatar/{{hash}}?s=30&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="16" />', { hash: md5(d.author.email) });
+        d.committerGravatar = Mustache.render('<img class="gravatar-commit" src="https://gravatar.com/avatar/{{hash}}?s=30&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="16" />', { hash: md5(d.author.email) });
       } else {
-        var shaDiff = data.payload.before + '...' + data.payload.head
-        data.commitsMessage = Mustache.render('<small class="commits-message"><a href="https://github.com/{{repo}}/compare/{{shaDiff}}">{{length}} more commits &raquo;</a>', { repo: data.repo.name, shaDiff: shaDiff, length: data.payload.size - 2 });
+        // Delete the rest of the commits after the first 2, and then break out of the each loop.
         data.payload.commits.splice(2, data.payload.size);
         return false;
       }
@@ -133,7 +146,8 @@ function getMessageFor(data) {
     // If this was a merge, set the merge message.
     if (data.payload.pull_request.merged) {
       data.payload.action = "merged";
-      data.mergeMessage = Mustache.render('<br><small class="merge-message">{{c}} commit with {{a}} additions and {{d}} deletions</small>', { c: pr.commits, a: pr.additions, d: pr.deletions })
+      var message = '{{c}} ' + pluralize('commit', pr.commits) + ' with {{a}} ' + pluralize('addition', pr.additions) + ' and {{d}} ' + pluralize('deletion', pr.deletions);
+      data.mergeMessage = Mustache.render('<br><small class="message-merge">' + message + '</small>', { c: pr.commits, a: pr.additions, d: pr.deletions })
     }
   }
 
@@ -193,7 +207,10 @@ var GitHubActivity = (function() {
           var rendered = getMessageFor(d)
           $(targetSelector).append(rendered);
         });
-      }).done(function() { $('.single-line-small').prev().css('display', 'none'); });
+      }).done(function() {
+        $('.single-line-small').prev().css('display', 'none');
+        $(targetSelector).wrapInner('<div class="github-activity-feed"></div>');
+      });
     });
   }
   return this;
