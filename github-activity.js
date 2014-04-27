@@ -21,6 +21,7 @@ var templates = {
   'DeleteEvent': '{{{userLink}}} deleted {{payload.ref_type}} {{payload.ref}} at {{{repoLink}}}',
   'FollowEvent': '{{{userLink}}} started following {{{targetLink}}}',
   'ForkEvent': '{{{userLink}}} forked {{{repoLink}}} to {{{forkLink}}}',
+  'GollumEvent': '{{{userLink}}} {{actionType}} the {{{repoLink}}} wiki<br>{{{userGravatar}}}<small>{{{message}}}</small>',
   'IssueCommentEvent': '{{{userLink}}} commented on {{issueType}} {{{issueLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
   'IssuesEvent': '{{{userLink}}} {{payload.action}} issue {{{issueLink}}}<br>{{{userGravatar}}}<small>{{payload.issue.title}}</small>',
   'MemberEvent': '{{{userLink}}} added {{{memberLink}}} to {{{repoLink}}}',
@@ -41,6 +42,7 @@ var icons = {
   'DeleteEvent': 'fa-trash-o',
   'FollowEvent': 'fa-male',
   'ForkEvent': 'fa-code-fork',
+  'GollumEvent': 'fa-book',
   'IssuesEvent': 'fa-check-circle-o',
   'IssueCommentEvent': 'fa-comments',
   'MemberEvent': 'fa-male',
@@ -103,34 +105,36 @@ function renderGitHubLink(url, title, cssClass) {
 }
 
 function getMessageFor(data) {
+  var p = data.payload;
+  
   data.githubUrl = "https://github.com"
   data.userLink = renderGitHubLink(data.actor.login);
   data.repoLink = renderGitHubLink(data.repo.name);
   data.userGravatar = Mustache.render('<div class="gravatar-user"><img src="{{url}}" class="gravatar-small"></div>', { url: data.actor.avatar_url });
 
   // Get the branch name if it exists.
-  if (data.payload.ref) {
-    if (data.payload.ref.substring(0, 11) === 'refs/heads/') {
-      data.branch = data.payload.ref.substring(11);
+  if (p.ref) {
+    if (p.ref.substring(0, 11) === 'refs/heads/') {
+      data.branch = p.ref.substring(11);
     } else {
-      data.branch = data.payload.ref;
+      data.branch = p.ref;
     }
     data.branchLink = renderGitHubLink(data.repo.name + '/tree/' + data.branch, data.branch) + ' at ';
   }
 
   // Only show the first 6 characters of the SHA of each commit if given.
-  if (data.payload.commits) {
-    var shaDiff = data.payload.before + '...' + data.payload.head
-    var length = data.payload.commits.length;
+  if (p.commits) {
+    var shaDiff = p.before + '...' + p.head
+    var length = p.commits.length;
     if (length === 2) {
       // If there are 2 commits, show message 'View comparison for these 2 commits >>'
       data.commitsMessage = Mustache.render('<small class="message-commits"><a href="https://github.com/{{repo}}/compare/{{shaDiff}}">View comparison for these 2 commits &raquo;</a>', { repo: data.repo.name, shaDiff: shaDiff });
     } else if (length > 2) {
       // If there are more than two, show message '(numberOfCommits - 2) more commits >>'
-      data.commitsMessage = Mustache.render('<small class="message-commits"><a href="https://github.com/{{repo}}/compare/{{shaDiff}}">{{length}} more ' + pluralize('commit', length - 2) + ' &raquo;</a>', { repo: data.repo.name, shaDiff: shaDiff, length: data.payload.size - 2 });
+      data.commitsMessage = Mustache.render('<small class="message-commits"><a href="https://github.com/{{repo}}/compare/{{shaDiff}}">{{length}} more ' + pluralize('commit', length - 2) + ' &raquo;</a>', { repo: data.repo.name, shaDiff: shaDiff, length: p.size - 2 });
     }
 
-    $.each(data.payload.commits, function(i, d) {
+    $.each(p.commits, function(i, d) {
       if (d.message.length > 66) {
         d.message = d.message.substring(0, 66) + '...';
       }
@@ -139,69 +143,77 @@ function getMessageFor(data) {
         d.committerGravatar = Mustache.render('<img class="gravatar-commit" src="https://gravatar.com/avatar/{{hash}}?s=30&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="16" />', { hash: md5(d.author.email) });
       } else {
         // Delete the rest of the commits after the first 2, and then break out of the each loop.
-        data.payload.commits.splice(2, data.payload.size);
+        p.commits.splice(2, p.size);
         return false;
       }
     });
   }
 
   // Get the link if this is an IssueEvent.
-  if (data.payload.issue) {
-    var title = data.repo.name + "#" + data.payload.issue.number;
-    data.issueLink = renderLink(data.payload.issue.html_url, title);
+  if (p.issue) {
+    var title = data.repo.name + "#" + p.issue.number;
+    data.issueLink = renderLink(p.issue.html_url, title);
     data.issueType = "issue";
-    if (data.payload.issue.pull_request) {
+    if (p.issue.pull_request) {
       data.issueType = "pull request";
     }
   }
 
   // Retrieve the pull request link if this is a PullRequestEvent.
-  if (data.payload.pull_request) {
-    var pr = data.payload.pull_request
-    data.pullRequestLink = renderLink(data.payload.html_url, data.repo.name + "#" + pr.number);
+  if (p.pull_request) {
+    var pr = p.pull_request
+    data.pullRequestLink = renderLink(p.html_url, data.repo.name + "#" + pr.number);
     data.mergeMessage = "";
 
     // If this was a merge, set the merge message.
-    if (data.payload.pull_request.merged) {
-      data.payload.action = "merged";
+    if (p.pull_request.merged) {
+      p.action = "merged";
       var message = '{{c}} ' + pluralize('commit', pr.commits) + ' with {{a}} ' + pluralize('addition', pr.additions) + ' and {{d}} ' + pluralize('deletion', pr.deletions);
       data.mergeMessage = Mustache.render('<br><small class="message-merge">' + message + '</small>', { c: pr.commits, a: pr.additions, d: pr.deletions })
     }
   }
 
   // Get the link if this is a PullRequestReviewCommentEvent
-  if (data.payload.comment && data.payload.comment.pull_request_url) {
-    var title = data.repo.name + "#" + data.payload.comment.pull_request_url.split('/').pop();
-    data.pullRequestLink = renderGitHubLink(data.payload.comment.pull_request_url, title);
+  if (p.comment && p.comment.pull_request_url) {
+    var title = data.repo.name + "#" + p.comment.pull_request_url.split('/').pop();
+    data.pullRequestLink = renderGitHubLink(p.comment.pull_request_url, title);
   }
 
   // Get the comment if one exists, and trim it to 150 characters.
-  if (data.payload.comment && data.payload.comment.body) {
-    data.comment = data.payload.comment.body;
+  if (p.comment && p.comment.body) {
+    data.comment = p.comment.body;
     if (data.comment.length > 150) {
       data.comment = data.comment.substring(0, 150) + '...';
     }
-    if (data.payload.comment.html_url && data.payload.comment.commit_id) {
-      var title = data.repo.name + '@' + data.payload.comment.commit_id.substring(0, 10);
-      data.commentLink = renderLink(data.payload.comment.html_url, title);
+    if (p.comment.html_url && p.comment.commit_id) {
+      var title = data.repo.name + '@' + p.comment.commit_id.substring(0, 10);
+      data.commentLink = renderLink(p.comment.html_url, title);
     }
   }
 
   if (data.type === 'ReleaseEvent') {
-    data.tagLink = renderLink(data.payload.release.html_url, data.payload.release.tag_name);
-    data.zipLink = renderLink(data.payload.release.zipball_url, 'Download Source Code (zip)');
+    data.tagLink = renderLink(p.release.html_url, p.release.tag_name);
+    data.zipLink = renderLink(p.release.zipball_url, 'Download Source Code (zip)');
   }
 
   if (data.type === 'FollowEvent') {
-    data.targetLink = renderGitHubLink(data.payload.target.login);
+    data.targetLink = renderGitHubLink(p.target.login);
   }
 
   if (data.type === 'ForkEvent') {
-    data.forkLink = renderGitHubLink(data.payload.forkee.full_name);
+    data.forkLink = renderGitHubLink(p.forkee.full_name);
   }
 
   if (data.type === 'MemberEvent') {
-    data.memberLink = renderGitHubLink(data.payload.member.login);
+    data.memberLink = renderGitHubLink(p.member.login);
+  }
+
+  // Wiki event
+  if (data.type === 'GollumEvent') {
+    var page = p.pages[0];
+    data.actionType = page.action;
+    data.message = data.actionType.charAt(0).toUpperCase() + data.actionType.slice(1) + ' ';
+    data.message += renderGitHubLink(page.html_url, page.title);
   }
 
   var message = Mustache.render(templates[data.type], data);
@@ -258,8 +270,6 @@ var GitHubActivity = (function() {
         $(selector).css('position', 'relative');
         $(selector).wrapInner('<div class="github-activity-feed"></div>');
         $('.github-activity-feed').append('<div class="push-small"></div>' + templates['Footer']);
-        // $('.single-line-small').prev().css('display', 'none');
-        $('.single-line-small').prev().val()
       });
     });
   }
