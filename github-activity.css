@@ -150,6 +150,33 @@ html, body {
   border-bottom: 1px solid #ddd;
 }
 
+
+.github-activity-feed .activity.small {
+  margin-top: 5px;
+  font-weight: normal;
+  font-size: 13px;
+}
+
+.github-activity-feed .activity.small a {
+  font-weight: normal;
+}
+
+.github-activity-feed .activity.small .message {
+  float: left;
+  width: auto;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+.github-activity-feed .activity.small i {
+  font-size: 16px;
+}
+
+.github-activity-feed .activity.small .time {
+  float: left;
+  margin-top: 6px;
+}
+
 .activity:last-child {
   padding-bottom: 100px;
 }
@@ -196,16 +223,6 @@ html, body {
 .github-activity-feed .sha {
   font-size: 12px;
   font-family: Consolas, "Liberation Mono", Courier, monospace;
-}
-
-.github-activity-feed .single-line-small {
-  margin-top: 5px;
-  font-weight: normal;
-  font-size: 13px;
-}
-
-.github-activity-feed .single-line-small a {
-  font-weight: normal;
 }
 
 .github-activity-feed .gravatar-small {
