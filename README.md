@@ -11,8 +11,8 @@ A sample image of the activity stream is shown below:
 The two dependencies for the plugin are the [Mustache](https://github.com/janl/mustache.js/) templating library and [FontAwesome](http://fontawesome.io) (if you want the icons to show). You can include these along with the scripts for the plugin in the head of your page with the following HTML:
 
 ```html
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-<link rel="stylesheet" src="github-activity.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+<link rel="stylesheet" href="github-activity.min.css">
 
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
 <script type="text/javascript" src="github-activity.min.js"></script>
