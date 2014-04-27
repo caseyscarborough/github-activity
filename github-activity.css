@@ -25,8 +25,7 @@ html, body {
 
 .github-activity-feed ul {
   list-style-type: none;
-  float: left;
-  width: calc(100% - 50px);
+  margin-bottom: 5px;
 }
 
 .github-activity-feed li {
@@ -183,11 +182,7 @@ html, body {
   width: calc(100% - 50px);
 }
 
-.github-activity-feed .message-commits {
-  font-size: 11px;
-  clear: both;
-  display: block;
-}
+.github-activity-feed .message-commits { font-size: 11px; }
 
 .github-activity-feed .message-merge {
   padding: 3px 7px;
@@ -237,6 +232,11 @@ html, body {
 
 .github-activity-feed .user-info a { color: #495961; }
 .github-activity-feed .user-info p a { font-weight: 100; }
+
+.github-activity-feed .without-name {
+  padding-top: 20px;
+  padding-left: 15px;
+}
 
 .github-activity-feed .info {
   margin: 15px;

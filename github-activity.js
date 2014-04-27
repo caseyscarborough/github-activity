@@ -1,14 +1,16 @@
 var templates = {
-  'Activity': '<div class="activity">\
+  'Activity': '<div id="{{id}}" class="activity">\
                  <div class="activity-icon"><i class="fa {{icon}}"></i></div>\
                  <div class="message"><div class="time">{{{timeString}}}</div>{{{message}}}</div>\
                  <div class="clear"></div>\
                </div>',
   'UserHeader': '<div class="header">\
                    <div class="github-icon"><i class="fa fa-github"></i></div>\
-                   <div class="user-info">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
+                   <div class="user-info{{withoutName}}">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
                    <div class="gravatar">{{{gravatarLink}}}</div>\
                  </div><div class="push"></div>',
+  'NoActivity': '<div class="info">{{{username}}} does not have any public activity yet.</div>',
+  'FollowEvent': '<div class="single-line-small">{{{userLink}}} started following {{{targetLink}}}</div>',
   'Footer':     '<div class="footer">Public Activity <a href="https://github.com/caseyscarborough/github-activity" target="_blank">GitHub Activity Stream</a>',
   'CommitCommentEvent': '{{{userLink}}} commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
   'CreateEvent': '<div class="single-line-small">{{{userLink}}} created {{payload.ref_type}} {{{branchLink}}}{{{repoLink}}}</div>',
@@ -19,7 +21,7 @@ var templates = {
   'PublicEvent': '<div class="single-line">{{{userLink}}} open sourced {{{repoLink}}}</div>',
   'PullRequestEvent': '{{{userLink}}} {{payload.action}} pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{payload.pull_request.title}}</small>{{{mergeMessage}}}',
   'PullRequestReviewCommentEvent': '{{{userLink}}} commented on pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',  
-  'PushEvent': '{{{userLink}}} pushed to {{{branchLink}}}{{{repoLink}}}<br>{{{userGravatar}}}\
+  'PushEvent': '{{{userLink}}} pushed to {{{branchLink}}}{{{repoLink}}}<br>\
                 <ul class="commits">{{#payload.commits}}\
                   <li><small>{{{committerGravatar}}} {{{shaLink}}} {{message}}</small></li>{{/payload.commits}}\
                 </ul>{{{commitsMessage}}}',
@@ -31,6 +33,7 @@ var icons = {
   'CommitCommentEvent': 'fa-comments',
   'CreateEvent': 'fa-plus small',
   'DeleteEvent': 'fa-trash-o small',
+  'FollowEvent': 'fa-male small',
   'ForkEvent': 'fa-code-fork small',
   'IssuesEvent': 'fa-check-circle-o',
   'IssueCommentEvent': 'fa-comments',
@@ -79,6 +82,8 @@ function pluralize(word, number) {
 }
 
 function renderLink(url, title, cssClass) {
+  if (!title) title = url;
+  if (typeof(cssClass) === 'undefined') cssClass = "";
   return Mustache.render('<a class="' + cssClass + '" href="{{url}}">{{{title}}}</a>', { url: url, title: title });
 }
 
@@ -178,9 +183,13 @@ function getMessageFor(data) {
     data.zipLink = renderLink(data.payload.release.zipball_url, 'Download Source Code (zip)');
   }
 
+  if (data.type === 'FollowEvent') {
+    data.targetLink = renderGitHubLink(data.payload.target.login);
+  }
+
   var message = Mustache.render(templates[data.type], data);
   var timeString = millisecondsToStr(new Date() - new Date(data.created_at));
-  var activity = { message: message, icon: icons[data.type], timeString: timeString };
+  var activity = { message: message, icon: icons[data.type], timeString: timeString, id: data.id };
 
   return Mustache.render(templates['Activity'], activity);
 }
@@ -203,7 +212,12 @@ var GitHubActivity = (function() {
     }
     
     $.getJSON(userUrl, function(data) {
-      data.userNameLink = renderLink(data.html_url, data.name);
+      if (data.name) {
+        data.userNameLink = renderLink(data.html_url, data.name);
+      } else {
+        data.withoutName = ' without-name';
+      }
+
       data.userLink = renderLink(data.html_url, data.login);
       data.gravatarLink = renderLink(data.html_url, '<img src="' + data.avatar_url + '">');
 
@@ -211,6 +225,11 @@ var GitHubActivity = (function() {
       $(selector).append(rendered);
     }).done(function() {
       $.getJSON(eventsUrl, function(data) {
+        if (data.length === 0) {
+          var rendered = Mustache.render(templates['NoActivity'], { username: options.username });
+          $(selector).append(rendered);
+          return false;
+        }
         $.each(data, function(i, d) {
           var rendered = getMessageFor(d)
           $(selector).append(rendered);
@@ -219,7 +238,8 @@ var GitHubActivity = (function() {
         $(selector).css('position', 'relative');
         $(selector).wrapInner('<div class="github-activity-feed"></div>');
         $('.github-activity-feed').append('<div class="push-small"></div>' + templates['Footer']);
-        $('.single-line-small').prev().css('display', 'none');
+        // $('.single-line-small').prev().css('display', 'none');
+        $('.single-line-small').prev().val()
       });
     });
   }
