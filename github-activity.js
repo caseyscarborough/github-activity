@@ -17,6 +17,7 @@ var templates = {
                  </div><div class="push"></div>',
   Footer: '<div class="footer">Public Activity <a href="https://github.com/caseyscarborough/github-activity" target="_blank">GitHub Activity Stream</a>',
   NoActivity: '<div class="info">This user does not have any public activity yet.</div>',
+  NotFound: '<div class="info">User {{username}} wasn\'t found.</div>',
   CommitCommentEvent: 'commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
   CreateEvent: 'created {{payload.ref_type}} {{{branchLink}}}{{{repoLink}}}',
   DeleteEvent: 'deleted {{payload.ref_type}} {{payload.ref}} at {{{repoLink}}}',
@@ -257,6 +258,9 @@ function getOutputFromRequest(url, func) {
     if (request.status >= 200 && request.status < 400){
       data = JSON.parse(request.responseText);
       text = func(data);
+    } else {
+      // An error occurred.
+      return false;
     }
   };
 
@@ -265,15 +269,22 @@ function getOutputFromRequest(url, func) {
   return text;
 }
 
+function renderStream(output, div) {
+  div.innerHTML = Mustache.render(templates.Stream, { text: output, footer: templates.Footer });
+  div.style.position = 'relative';
+}
+
 var GitHubActivity = (function() {
   this.feed = function(options) {
     if (!options.username || !options.selector) {
       return false;
     }
 
-    var selector = options.selector.substring(1);
-    var userUrl   = 'https://api.github.com/users/' + options.username;
-    var eventsUrl = userUrl + '/events';
+    var selector = options.selector,
+        userUrl   = 'https://api.github.com/users/' + options.username,
+        eventsUrl = userUrl + '/events',
+        output,
+        div;
 
     if (options.clientId && options.clientSecret) {
       var authString = '?client_id=' + options.clientId + '&client_secret=' + options.clientSecret;
@@ -281,10 +292,22 @@ var GitHubActivity = (function() {
       eventsUrl += authString;
     }
 
-    var output = getOutputFromRequest(userUrl, getHeaderHTML) + getOutputFromRequest(eventsUrl, getActivityHTML);
-    var feedDiv = document.getElementById(selector);
-    feedDiv.innerHTML = Mustache.render(templates.Stream, { text: output, footer: templates.Footer });
-    feedDiv.style.position = 'relative';
+    output = getOutputFromRequest(userUrl, getHeaderHTML);
+    if (output) {
+      // User was found.
+      output += getOutputFromRequest(eventsUrl, getActivityHTML);
+    } else {
+      output = Mustache.render(templates.NotFound, { username: options.username });
+    }
+    
+    div = selector.charAt(0) === '#' ? document.getElementById(selector.substring(1)) : document.getElementsByClassName(selector.substring(1));
+    if (div instanceof HTMLCollection) {
+      for (var i = 0; i < div.length; i++) {
+        renderStream(output, div[i]);
+      }
+    } else {
+      renderStream(output, div);
+    }
   };
   return this;
 })();
