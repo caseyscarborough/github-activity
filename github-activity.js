@@ -64,30 +64,32 @@ function md5cycle(f,h){var g=f[0],e=f[1],j=f[2],i=f[3];g=ff(g,e,j,i,h[0],7,-6808
 // Takes in milliseconds and converts it to a human readable time,
 // such as 'about 3 hours ago' or '23 days ago'
 function millisecondsToStr(milliseconds) {
-    function numberEnding (number) {
-        return (number > 1) ? 's ago' : ' ago';
-    }
-    var temp = Math.floor(milliseconds / 1000);
+  'use strict';
+  
+  function numberEnding(number) {
+    return (number > 1) ? 's ago' : ' ago';
+  }
+  var temp = Math.floor(milliseconds / 1000);
 
-    var years = Math.floor(temp / 31536000);
-    if (years) return years + ' year' + numberEnding(years);
+  var years = Math.floor(temp / 31536000);
+  if (years) return years + ' year' + numberEnding(years);
 
-    var months = Math.floor((temp %= 31536000) / 2592000);
-    if (months) return months + ' month' + numberEnding(months);
+  var months = Math.floor((temp %= 31536000) / 2592000);
+  if (months) return months + ' month' + numberEnding(months);
 
-    var days = Math.floor((temp %= 2592000) / 86400);
-    if (days) return days + ' day' + numberEnding(days);
+  var days = Math.floor((temp %= 2592000) / 86400);
+  if (days) return days + ' day' + numberEnding(days);
 
-    var hours = Math.floor((temp %= 86400) / 3600);
-    if (hours) return 'about ' + hours + ' hour' + numberEnding(hours);
+  var hours = Math.floor((temp %= 86400) / 3600);
+  if (hours) return 'about ' + hours + ' hour' + numberEnding(hours);
 
-    var minutes = Math.floor((temp %= 3600) / 60);
-    if (minutes) return minutes + ' minute' + numberEnding(minutes);
+  var minutes = Math.floor((temp %= 3600) / 60);
+  if (minutes) return minutes + ' minute' + numberEnding(minutes);
 
-    var seconds = temp % 60;
-    if (seconds) return seconds + ' second' + numberEnding(seconds);
+  var seconds = temp % 60;
+  if (seconds) return seconds + ' second' + numberEnding(seconds);
 
-    return 'just now';
+  return 'just now';
 }
 
 // Pluralizes a word, but only works when the word requires
@@ -127,7 +129,7 @@ function getMessageFor(data) {
 
   // Only show the first 6 characters of the SHA of each commit if given.
   if (p.commits) {
-    var shaDiff = p.before + '...' + p.head
+    var shaDiff = p.before + '...' + p.head;
     var length = p.commits.length;
     if (length === 2) {
       // If there are 2 commits, show message 'View comparison for these 2 commits >>'
@@ -164,7 +166,7 @@ function getMessageFor(data) {
 
   // Retrieve the pull request link if this is a PullRequestEvent.
   if (p.pull_request) {
-    var pr = p.pull_request
+    var pr = p.pull_request;
     data.pullRequestLink = renderLink(p.html_url, data.repo.name + "#" + pr.number);
     data.mergeMessage = "";
 
@@ -172,7 +174,7 @@ function getMessageFor(data) {
     if (p.pull_request.merged) {
       p.action = "merged";
       var message = '{{c}} ' + pluralize('commit', pr.commits) + ' with {{a}} ' + pluralize('addition', pr.additions) + ' and {{d}} ' + pluralize('deletion', pr.deletions);
-      data.mergeMessage = Mustache.render('<br><small class="message-merge">' + message + '</small>', { c: pr.commits, a: pr.additions, d: pr.deletions })
+      data.mergeMessage = Mustache.render('<br><small class="message-merge">' + message + '</small>', { c: pr.commits, a: pr.additions, d: pr.deletions });
     }
   }
 
@@ -221,9 +223,9 @@ function getMessageFor(data) {
   var activity = { message: message, icon: icons[data.type], timeString: timeString, userLink: renderGitHubLink(data.actor.login) };
 
   if (singleLineActivities.indexOf(data.type) > -1) {
-    return Mustache.render(templates['SingleLineActivity'], activity);
+    return Mustache.render(templates.SingleLineActivity, activity);
   }
-  return Mustache.render(templates['Activity'], activity);
+  return Mustache.render(templates.Activity, activity);
 }
 
 function getHeaderHTML(data) {
@@ -235,20 +237,20 @@ function getHeaderHTML(data) {
   data.userLink = renderLink(data.html_url, data.login);
   data.gravatarLink = renderLink(data.html_url, '<img src="' + data.avatar_url + '">');
 
-  return Mustache.render(templates['UserHeader'], data);
+  return Mustache.render(templates.UserHeader, data);
 }
 
 function getActivityHTML(data) {
   var text = '';
   if (data.length === 0) {
-    return Mustache.render(templates['NoActivity'], {});
+    return Mustache.render(templates.NoActivity, {});
   }
   data.forEach(function(d, i) { text += getMessageFor(d); });
   return text;
 }
 
 function getOutputFromRequest(url, func) {
-  var request = new XMLHttpRequest();
+  var text, data, request = new XMLHttpRequest();
   request.open('GET', url, false);
 
   request.onload = function() {
@@ -258,7 +260,7 @@ function getOutputFromRequest(url, func) {
     }
   };
 
-  request.onerror = function() { console.log('An error occurred connecting to the url.') };
+  request.onerror = function() { console.log('An error occurred connecting to the url.'); };
   request.send();
   return text;
 }
@@ -276,13 +278,13 @@ var GitHubActivity = (function() {
     if (options.clientId && options.clientSecret) {
       var authString = '?client_id=' + options.clientId + '&client_secret=' + options.clientSecret;
       userUrl   += authString;
-      eventsUrl += authString
+      eventsUrl += authString;
     }
 
     var output = getOutputFromRequest(userUrl, getHeaderHTML) + getOutputFromRequest(eventsUrl, getActivityHTML);
     var feedDiv = document.getElementById(selector);
-    feedDiv.innerHTML = Mustache.render(templates['Stream'], { text: output, footer: templates['Footer'] });
+    feedDiv.innerHTML = Mustache.render(templates.Stream, { text: output, footer: templates.Footer });
     feedDiv.style.position = 'relative';
-  }
+  };
   return this;
 })();
