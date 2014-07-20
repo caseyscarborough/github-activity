@@ -1,23 +1,23 @@
 var templates = {
-  Stream: '<div class="github-activity-feed">{{{text}}}<div class="push-small"></div>{{{footer}}}</div>',
-  Activity: '<div id="{{id}}" class="activity">\
-                 <div class="activity-icon"><i class="fa {{icon}}"></i></div>\
-                 <div class="message"><div class="time">{{{timeString}}}</div>{{{userLink}}} {{{message}}}</div>\
-                 <div class="clear"></div>\
+  Stream: '<div class="gha-feed">{{{text}}}<div class="gha-push-small"></div>{{{footer}}}</div>',
+  Activity: '<div id="{{id}}" class="gha-activity">\
+                 <div class="gha-activity-icon"><i class="fa {{icon}}"></i></div>\
+                 <div class="gha-message"><div class="gha-time">{{{timeString}}}</div>{{{userLink}}} {{{message}}}</div>\
+                 <div class="gha-clear"></div>\
                </div>',
-  SingleLineActivity: '<div class="activity small">\
-                           <div class="activity-icon"><i class="fa {{icon}}"></i></div>\
-                           <div class="message">{{{userLink}}} {{{message}}}</div><div class="time">{{{timeString}}}</div>\
-                           <div class="clear"></div>\
+  SingleLineActivity: '<div class="gha-activity gha-small">\
+                           <div class="gha-activity-icon"><i class="fa {{icon}}"></i></div>\
+                           <div class="gha-message">{{{userLink}}} {{{message}}}</div><div class="gha-time">{{{timeString}}}</div>\
+                           <div class="gha-clear"></div>\
                          </div>',
-  UserHeader: '<div class="header">\
-                   <div class="github-icon"><i class="fa fa-github"></i></div>\
-                   <div class="user-info{{withoutName}}">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
-                   <div class="gravatar">{{{gravatarLink}}}</div>\
-                 </div><div class="push"></div>',
-  Footer: '<div class="footer">Public Activity <a href="https://github.com/caseyscarborough/github-activity" target="_blank">GitHub Activity Stream</a>',
-  NoActivity: '<div class="info">This user does not have any public activity yet.</div>',
-  NotFound: '<div class="info">User {{username}} wasn\'t found.</div>',
+  UserHeader: '<div class="gha-header">\
+                   <div class="gha-github-icon"><i class="fa fa-github"></i></div>\
+                   <div class="gha-user-info{{withoutName}}">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
+                   <div class="gha-gravatar">{{{gravatarLink}}}</div>\
+                 </div><div class="gha-push"></div>',
+  Footer: '<div class="gha-footer">Public Activity <a href="https://github.com/caseyscarborough/github-activity" target="_blank">GitHub Activity Stream</a>',
+  NoActivity: '<div class="gha-info">This user does not have any public activity yet.</div>',
+  NotFound: '<div class="gha-info">User {{username}} wasn\'t found.</div>',
   CommitCommentEvent: 'commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
   CreateEvent: 'created {{payload.ref_type}} {{{branchLink}}}{{{repoLink}}}',
   DeleteEvent: 'deleted {{payload.ref_type}} {{payload.ref}} at {{{repoLink}}}',
@@ -32,8 +32,8 @@ var templates = {
   PullRequestEvent: '{{payload.action}} pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{payload.pull_request.title}}</small>{{{mergeMessage}}}',
   PullRequestReviewCommentEvent: 'commented on pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
   PushEvent: 'pushed to {{{branchLink}}}{{{repoLink}}}<br>\
-                <ul class="commits">{{#payload.commits}}<li><small>{{{committerGravatar}}} {{{shaLink}}} {{message}}</small></li>{{/payload.commits}}</ul>\
-                <small class="message-commits">{{{commitsMessage}}}</small>',
+                <ul class="gha-commits">{{#payload.commits}}<li><small>{{{committerGravatar}}} {{{shaLink}}} {{message}}</small></li>{{/payload.commits}}</ul>\
+                <small class="gha-message-commits">{{{commitsMessage}}}</small>',
   ReleaseEvent: 'released {{{tagLink}}} at {{{repoLink}}}<br>{{{userGravatar}}}<small><i class="fa fa-download"></i>  {{{zipLink}}}',
   WatchEvent: 'starred {{{repoLink}}}'
 },
@@ -116,7 +116,7 @@ function renderGitHubLink(url, title, cssClass) {
 function getMessageFor(data) {
   var p = data.payload;
   data.repoLink = renderGitHubLink(data.repo.name);
-  data.userGravatar = Mustache.render('<div class="gravatar-user"><img src="{{url}}" class="gravatar-small"></div>', { url: data.actor.avatar_url });
+  data.userGravatar = Mustache.render('<div class="gha-gravatar-user"><img src="{{url}}" class="gha-gravatar-small"></div>', { url: data.actor.avatar_url });
 
   // Get the branch name if it exists.
   if (p.ref) {
@@ -145,8 +145,8 @@ function getMessageFor(data) {
         d.message = d.message.substring(0, 66) + '...';
       }
       if (i < 2) {
-        d.shaLink = renderGitHubLink(data.repo.name + '/commit/' + d.sha, d.sha.substring(0, 6), 'sha');
-        d.committerGravatar = Mustache.render('<img class="gravatar-commit" src="https://gravatar.com/avatar/{{hash}}?s=30&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="16" />', { hash: md5(d.author.email) });
+        d.shaLink = renderGitHubLink(data.repo.name + '/commit/' + d.sha, d.sha.substring(0, 6), 'gha-sha');
+        d.committerGravatar = Mustache.render('<img class="gha-gravatar-commit" src="https://gravatar.com/avatar/{{hash}}?s=30&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="16" />', { hash: md5(d.author.email) });
       } else {
         // Delete the rest of the commits after the first 2, and then break out of the each loop.
         p.commits.splice(2, p.size);
@@ -175,7 +175,7 @@ function getMessageFor(data) {
     if (p.pull_request.merged) {
       p.action = "merged";
       var message = '{{c}} ' + pluralize('commit', pr.commits) + ' with {{a}} ' + pluralize('addition', pr.additions) + ' and {{d}} ' + pluralize('deletion', pr.deletions);
-      data.mergeMessage = Mustache.render('<br><small class="message-merge">' + message + '</small>', { c: pr.commits, a: pr.additions, d: pr.deletions });
+      data.mergeMessage = Mustache.render('<br><small class="gha-message-merge">' + message + '</small>', { c: pr.commits, a: pr.additions, d: pr.deletions });
     }
   }
 
