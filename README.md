@@ -18,6 +18,26 @@ The two dependencies for the plugin are the [Mustache](https://github.com/janl/m
 <script type="text/javascript" src="http://caseyscarborough.github.io/github-activity/github-activity.min.js"></script>
 ```
 
+The files can be downloaded from the [dist](https://github.com/caseyscarborough/github-activity/tree/master/dist) directory.
+
+If you'd like to build the files yourself:
+
+```bash
+# Ensure you have grunt and bower installed
+npm install bower
+npm install grunt-cli
+
+# Clone the repository
+git clone git@github.com:caseyscarborough/github-activity.git
+cd github-activity
+
+# Install dependencies
+bower install
+
+# Build dist
+grunt
+```
+
 ## Usage
 
 To use the library, begin by creating a new div with an id in the body of your page:
