@@ -1,20 +1,20 @@
 var templates = {
   Stream: '<div class="gha-feed">{{{text}}}<div class="gha-push-small"></div>{{{footer}}}</div>',
   Activity: '<div id="{{id}}" class="gha-activity">\
-                 <div class="gha-activity-icon"><i class="fa {{icon}}"></i></div>\
-                 <div class="gha-message"><div class="gha-time">{{{timeString}}}</div>{{{userLink}}} {{{message}}}</div>\
-                 <div class="gha-clear"></div>\
-               </div>',
+               <div class="gha-activity-icon"><span class="octicon octicon-{{icon}}"></span></div>\
+               <div class="gha-message"><div class="gha-time">{{{timeString}}}</div>{{{userLink}}} {{{message}}}</div>\
+               <div class="gha-clear"></div>\
+             </div>',
   SingleLineActivity: '<div class="gha-activity gha-small">\
-                           <div class="gha-activity-icon"><i class="fa {{icon}}"></i></div>\
-                           <div class="gha-message">{{{userLink}}} {{{message}}}</div><div class="gha-time">{{{timeString}}}</div>\
-                           <div class="gha-clear"></div>\
-                         </div>',
+                         <div class="gha-activity-icon"><span class="octicon octicon-{{icon}}"></span></div>\
+                         <div class="gha-message">{{{userLink}}} {{{message}}}</div><div class="gha-time">{{{timeString}}}</div>\
+                         <div class="gha-clear"></div>\
+                       </div>',
   UserHeader: '<div class="gha-header">\
-                   <div class="gha-github-icon"><i class="fa fa-github"></i></div>\
-                   <div class="gha-user-info{{withoutName}}">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
-                   <div class="gha-gravatar">{{{gravatarLink}}}</div>\
-                 </div><div class="gha-push"></div>',
+                 <div class="gha-github-icon"><span class="octicon octicon-mark-github"></span></div>\
+                 <div class="gha-user-info{{withoutName}}">{{{userNameLink}}}<p>{{{userLink}}}</p></div>\
+                 <div class="gha-gravatar">{{{gravatarLink}}}</div>\
+               </div><div class="gha-push"></div>',
   Footer: '<div class="gha-footer">Public Activity <a href="https://github.com/caseyscarborough/github-activity" target="_blank">GitHub Activity Stream</a>',
   NoActivity: '<div class="gha-info">This user does not have any public activity yet.</div>',
   NotFound: '<div class="gha-info">User {{username}} wasn\'t found.</div>',
@@ -34,27 +34,29 @@ var templates = {
   PushEvent: 'pushed to {{{branchLink}}}{{{repoLink}}}<br>\
                 <ul class="gha-commits">{{#payload.commits}}<li><small>{{{committerGravatar}}} {{{shaLink}}} {{message}}</small></li>{{/payload.commits}}</ul>\
                 <small class="gha-message-commits">{{{commitsMessage}}}</small>',
-  ReleaseEvent: 'released {{{tagLink}}} at {{{repoLink}}}<br>{{{userGravatar}}}<small><i class="fa fa-download"></i>  {{{zipLink}}}',
+  ReleaseEvent: 'released {{{tagLink}}} at {{{repoLink}}}<br>{{{userGravatar}}}<small><span class="octicon octicon-cloud-download"></span>  {{{zipLink}}}</small>',
   WatchEvent: 'starred {{{repoLink}}}'
 },
 
 icons = {
-  CommitCommentEvent: 'fa-comments',
-  CreateEvent: 'fa-plus',
-  DeleteEvent: 'fa-trash-o',
-  FollowEvent: 'fa-male',
-  ForkEvent: 'fa-code-fork',
-  GistEvent: 'fa-code',
-  GollumEvent: 'fa-book',
-  IssuesEvent: 'fa-check-circle-o',
-  IssueCommentEvent: 'fa-comments',
-  MemberEvent: 'fa-male',
-  PublicEvent: 'fa-globe',
-  PullRequestEvent: 'fa-reply',
-  PullRequestReviewCommentEvent: 'fa-comments',
-  PushEvent: 'fa-arrow-circle-o-up',
-  ReleaseEvent: 'fa-tags',
-  WatchEvent: 'fa-star'
+  CommitCommentEvent: 'comment-discussion',
+  CreateEvent_repository: 'repo-create',
+  CreateEvent_tag: 'tag-add',
+  CreateEvent_branch: 'git-branch-create',
+  DeleteEvent: 'repo-delete',
+  FollowEvent: 'person-follow',
+  ForkEvent: 'repo-forked',
+  GistEvent: 'gist',
+  GollumEvent: 'repo',
+  IssuesEvent: 'issue-opened',
+  IssueCommentEvent: 'comment-discussion',
+  MemberEvent: 'person',
+  PublicEvent: 'globe',
+  PullRequestEvent: 'git-pull-request',
+  PullRequestReviewCommentEvent: 'comment-discussion',
+  PushEvent: 'git-commit',
+  ReleaseEvent: 'tag-add',
+  WatchEvent: 'star'
 },
 
 singleLineActivities = [ 'CreateEvent', 'DeleteEvent', 'FollowEvent', 'ForkEvent', 'GistEvent', 'MemberEvent', 'WatchEvent' ];
@@ -221,7 +223,14 @@ function getMessageFor(data) {
 
   var message = Mustache.render(templates[data.type], data);
   var timeString = millisecondsToStr(new Date() - new Date(data.created_at));
-  var activity = { message: message, icon: icons[data.type], timeString: timeString, userLink: renderGitHubLink(data.actor.login) };
+  var icon;
+
+  if (data.type == 'CreateEvent') {
+    icon = icons[data.type + '_' + p.ref_type];
+  } else {
+    icon = icons[data.type]
+  }
+  var activity = { message: message, icon: icon, timeString: timeString, userLink: renderGitHubLink(data.actor.login) };
 
   if (singleLineActivities.indexOf(data.type) > -1) {
     return Mustache.render(templates.SingleLineActivity, activity);

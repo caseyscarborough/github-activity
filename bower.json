@@ -20,7 +20,7 @@
     "tests"
   ],
   "dependencies": {
-    "font-awesome": "~4.1.0",
+    "octicons": "~2.1.0",
     "mustache": "~0.8.2"
   },
   "devDependencies": {

@@ -124,8 +124,12 @@ span.gha-time {
   float: left;
   padding: 9px 0 0;
   width: 35px;
+  height: 35px;
   color: #495961;
-  font-size: 48px;
+}
+
+.gha-github-icon .octicon {
+  font: normal normal 40px octicons;
 }
 
 .gha-gravatar {
@@ -169,7 +173,7 @@ span.gha-time {
   margin-top: 5px;
 }
 
-.gha-activity.gha-small i {
+.gha-activity.gha-small span {
   font-size: 16px;
 }
 
@@ -189,15 +193,15 @@ span.gha-time {
   border-bottom: 1px solid #ddd;
 }
 
-.gha-activity-icon {
+.gha-activity-icon .octicon{
   display: inline;
   float: left;
   clear: both;
   margin: 6px auto; 
-  width: 35px;
+  width: 50px;
   color: #bbb;
   text-align: center;
-  font-size: 20px;
+  font: normal normal 30px octicons;
 }
 
 .gha-activity-icon .gha-small {

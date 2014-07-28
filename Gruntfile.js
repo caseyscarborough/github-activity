@@ -15,14 +15,27 @@ module.exports = function(grunt) {
       dist: {
         files: [{
             expand: true,
-            cwd: '<%= config.bower %>/font-awesome',
-            src: 'fonts/*',
+            cwd: '<%= config.bower %>/octicons/octicons',
+            src: 'octicons.ttf',
             dest: '<%= config.dist %>'
-          }, {
+          },
+          {
             expand: true,
-            cwd: '<%= config.bower %>/font-awesome/css',
-            src: 'font-awesome.min.css',
-            dest: '<%= config.dist %>/css'
+            cwd: '<%= config.bower %>/octicons/octicons',
+            src: 'octicons.woff',
+            dest: '<%= config.dist %>'
+          },
+          {
+            expand: true,
+            cwd: '<%= config.bower %>/octicons/octicons',
+            src: 'octicons.eot',
+            dest: '<%= config.dist %>'
+          },
+          {
+            expand: true,
+            cwd: '<%= config.bower %>/octicons/octicons',
+            src: 'octicons.svg',
+            dest: '<%= config.dist %>'
           }
         ]
       }
@@ -33,8 +46,11 @@ module.exports = function(grunt) {
           banner: config.banner
         },
         files: {
-          '<%= config.dist %>/css/github-activity.min.css': [
+          '<%= config.dist %>/github-activity.min.css': [
             '<%= config.src %>/github-activity.css'
+          ],
+          '<%= config.dist %>/octicons.min.css': [
+            '<%= config.bower %>/octicons/octicons/octicons.css'
           ]
         }
       }
@@ -45,9 +61,11 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          '<%= config.dist %>/js/github-activity.min.js': [
-            '<%= config.bower %>/mustache/mustache.js',
+          '<%= config.dist %>/github-activity.min.js': [
             '<%= config.src %>/github-activity.js'
+          ],
+          '<%= config.dist %>/mustache.min.js': [
+            '<%= config.bower %>/mustache/mustache.js'
           ]
         }
       }
