@@ -41,8 +41,9 @@ html, body {
 
 .gha-feed small a {
   font-weight: normal;
-  .more-commits { font-size: 11px; }
 }
+
+.gha-feed small a .more-commits { font-size: 11px; }
 
 span.gha-time {
   color: #bbb;
