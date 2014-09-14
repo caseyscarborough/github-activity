@@ -205,6 +205,15 @@ var GitHubActivity = (function() {
       userUrl   += authString;
       eventsUrl += authString;
     }
+    
+    // Allow templates override
+    if (typeof options.templates == 'object') {
+      for (var template in templates) {
+        if (typeof options.templates[template] == 'string') {
+          templates[template] = options.templates[template];
+        }
+      }
+    }
 
     output = methods.getOutputFromRequest(userUrl, methods.getHeaderHTML);
     if (output) {
