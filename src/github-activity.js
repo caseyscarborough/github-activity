@@ -157,12 +157,21 @@ var GitHubActivity = (function() {
 
       return Mustache.render(templates.UserHeader, data);
     },
-    getActivityHTML: function(data) {
+    getActivityHTML: function(data, limit) {
       var text = '';
-      if (data.length === 0) {
+      var dataLength = data.length;
+      if (limit && limit > dataLength) {
+          limit = dataLength;
+      }
+      limit = limit ? limit : dataLength;
+
+      if (limit === 0) {
         return Mustache.render(templates.NoActivity, {});
       }
-      data.forEach(function(d, i) { text += methods.getMessageFor(d); });
+      for (var i = 0; i < limit; i++) {
+        text += methods.getMessageFor(data[i]);
+      }
+
       return text;
     },
     getOutputFromRequest: function(url, func) {
@@ -205,7 +214,7 @@ var GitHubActivity = (function() {
       userUrl   += authString;
       eventsUrl += authString;
     }
-    
+
     // Allow templates override
     if (typeof options.templates == 'object') {
       for (var template in templates) {
@@ -218,11 +227,19 @@ var GitHubActivity = (function() {
     output = methods.getOutputFromRequest(userUrl, methods.getHeaderHTML);
     if (output) {
       // User was found.
-      output += methods.getOutputFromRequest(eventsUrl, methods.getActivityHTML);
+      var limit;
+      if (options.limit != 'undefined') {
+         limit = parseInt(options.limit, 10);
+      } else {
+         limit = null;
+      }
+      output += methods.getOutputFromRequest(eventsUrl, function(data) {
+        return methods.getActivityHTML(data, limit);
+      });
     } else {
       output = Mustache.render(templates.NotFound, { username: options.username });
     }
-    
+
     div = selector.charAt(0) === '#' ? document.getElementById(selector.substring(1)) : document.getElementsByClassName(selector.substring(1));
     if (div instanceof HTMLCollection) {
       for (var i = 0; i < div.length; i++) {
@@ -240,7 +257,7 @@ var GitHubActivity = (function() {
 // such as 'about 3 hours ago' or '23 days ago'
 function millisecondsToStr(milliseconds) {
   'use strict';
-  
+
   function numberEnding(number) {
     return (number > 1) ? 's ago' : ' ago';
   }
