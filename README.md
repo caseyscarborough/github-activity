@@ -49,7 +49,11 @@ To use the library, begin by creating a new div with an id in the body of your p
 Then call the feed method via Javascript:
 
 ```js
-GitHubActivity.feed({ username: "your-username", selector: "#feed" });
+GitHubActivity.feed({
+	username: "your-username",
+	selector: "#feed",
+	limit: 20 // optional
+});
 ```
 
 ## Credits
