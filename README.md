@@ -56,6 +56,42 @@ GitHubActivity.feed({
 });
 ```
 
+## Getting organisation feed
+
+As well as getting a feed for an individual user, you can get an organisation's feed:
+
+```js
+GitHubActivity.feed({
+	username: "my-org",
+	orgsOrUsers: "orgs",
+	selector: "#feed",
+	limit: 20 // optional
+});
+```
+
+## Templating
+
+You can override templates to customise the HTML to whatever you want, for example:
+
+```js
+var templates = {
+	Activity = '<li>{{{userLink}}} {{{message}}}\
+		<span class="date">{{{timeString}}}</span></li>',
+	SingleLineActivity = '<li>{{{userLink}}} {{{message}}}\
+		<span class="date">{{{timeString}}}</span></li>',
+	Stream = '<ul class="avatarList">{{{text}}}\
+		<li><a class="button" href="opensource.html"><span class="icon icon-opensource"></span> Open source</a></li></ul>'
+};
+
+GitHubActivity.feed({
+	templates: templates,
+	username: "my-username",
+	selector: "#feed"
+});
+```
+
+You can see what templates are available for overriding by looking at the source code for `github-activity.js`.
+
 ## Credits
 
 * [MD5 Methods](http://www.myersdaily.org/joseph/javascript/md5-text.html)

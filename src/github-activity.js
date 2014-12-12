@@ -203,8 +203,12 @@ var GitHubActivity = (function() {
       return false;
     }
 
+    if (!options.usersOrOrgs) {
+      options.usersOrOrgs = 'users';
+    }
+
     var selector = options.selector,
-        userUrl   = 'https://api.github.com/users/' + options.username,
+        userUrl   = 'https://api.github.com/' + options.usersOrOrgs + '/' + options.username,
         eventsUrl = userUrl + '/events',
         output,
         div;
