@@ -1,5 +1,5 @@
 {
-  "name": "GitHub Activity Stream",
+  "name": "github-activity-stream",
   "version": "0.1.0",
   "description": "A widget for displaying GitHub activity for a user.",
   "main": "Gruntfile.js",
