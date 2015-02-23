@@ -28,7 +28,7 @@ npm install bower
 npm install grunt-cli
 
 # Clone the repository
-git clone git@github.com:caseyscarborough/github-activity.git
+git clone https://github.com/caseyscarborough/github-activity.git
 cd github-activity
 
 # Install dependencies
@@ -51,6 +51,7 @@ Then call the feed method via Javascript:
 ```js
 GitHubActivity.feed({
 	username: "your-username",
+	repository: "your-repo", // optional
 	selector: "#feed",
 	limit: 20 // optional
 });
