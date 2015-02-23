@@ -209,6 +209,10 @@ var GitHubActivity = (function() {
         output,
         div;
 
+    if (!!options.repository){
+      eventsUrl = 'https://api.github.com/repos/' + options.username + '/' + options.repository + '/events';
+    }
+
     if (options.clientId && options.clientSecret) {
       var authString = '?client_id=' + options.clientId + '&client_secret=' + options.clientSecret;
       userUrl   += authString;
