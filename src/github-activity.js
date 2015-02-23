@@ -200,6 +200,7 @@ var GitHubActivity = (function() {
 
   obj.feed = function(options) {
     if (!options.username || !options.selector) {
+      throw "You must specify the username and selector options for the activity stream.";
       return false;
     }
 
