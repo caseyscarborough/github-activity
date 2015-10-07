@@ -174,28 +174,40 @@ var GitHubActivity = (function() {
 
       return text;
     },
-    getOutputFromRequest: function(url, func) {
+    getOutputFromRequest: function(url, callback) {
       var text, data, request = new XMLHttpRequest();
-      request.open('GET', url, false);
+      request.open('GET', url, true);
       request.setRequestHeader('Accept', 'application/vnd.github.v3+json');
 
-      request.onload = function() {
-        if (request.status >= 200 && request.status < 400){
-          data = JSON.parse(request.responseText);
-          text = func(data);
-        } else {
-          // An error occurred.
-          return false;
+      request.onload = function(e) {
+        if (request.readyState === 4) {
+          if (request.status >= 200 && request.status < 400){
+            data = JSON.parse(request.responseText);
+            callback(data);
+          } else {
+            // An error occurred.
+            throw "An error occurred making request to " + url;
+            return false;
+          }
         }
       };
 
       request.onerror = function() { console.log('An error occurred connecting to the url.'); };
       request.send();
-      return text;
     },
     renderStream: function(output, div) {
       div.innerHTML = Mustache.render(templates.Stream, { text: output, footer: templates.Footer });
       div.style.position = 'relative';
+    },
+    writeOutput: function(selector, content) {
+      var div = selector.charAt(0) === '#' ? document.getElementById(selector.substring(1)) : document.getElementsByClassName(selector.substring(1));
+      if (div instanceof HTMLCollection) {
+        for (var i = 0; i < div.length; i++) {
+          methods.renderStream(content, div[i]);
+        }
+      } else {
+        methods.renderStream(content, div);
+      }
     }
   };
 
@@ -208,8 +220,7 @@ var GitHubActivity = (function() {
     var selector = options.selector,
         userUrl   = 'https://api.github.com/users/' + options.username,
         eventsUrl = userUrl + '/events',
-        output,
-        div;
+        output = "";
 
     if (!!options.repository){
       eventsUrl = 'https://api.github.com/repos/' + options.username + '/' + options.repository + '/events';
@@ -230,30 +241,20 @@ var GitHubActivity = (function() {
       }
     }
 
-    output = methods.getOutputFromRequest(userUrl, methods.getHeaderHTML);
-    if (output) {
-      // User was found.
-      var limit;
-      if (options.limit != 'undefined') {
-         limit = parseInt(options.limit, 10);
+    methods.getOutputFromRequest(userUrl, function(data) {
+      output += methods.getHeaderHTML(data);
+      if (output) {
+        // User was found.
+        var limit = options.limit != 'undefined' ? parseInt(options.limit, 10) : null;
+        methods.getOutputFromRequest(eventsUrl, function(data) {
+          output += methods.getActivityHTML(data, limit);
+          methods.writeOutput(selector, output);
+        });
       } else {
-         limit = null;
+        output = Mustache.render(templates.NotFound, { username: options.username });
+        methods.writeOutput(selector, output);
       }
-      output += methods.getOutputFromRequest(eventsUrl, function(data) {
-        return methods.getActivityHTML(data, limit);
-      });
-    } else {
-      output = Mustache.render(templates.NotFound, { username: options.username });
-    }
-
-    div = selector.charAt(0) === '#' ? document.getElementById(selector.substring(1)) : document.getElementsByClassName(selector.substring(1));
-    if (div instanceof HTMLCollection) {
-      for (var i = 0; i < div.length; i++) {
-        methods.renderStream(output, div[i]);
-      }
-    } else {
-      methods.renderStream(output, div);
-    }
+    });
   };
 
   return obj;
