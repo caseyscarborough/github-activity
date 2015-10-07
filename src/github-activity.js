@@ -183,12 +183,8 @@ var GitHubActivity = (function() {
         if (request.readyState === 4) {
           if (request.status >= 200 && request.status < 400){
             data = JSON.parse(request.responseText);
-            callback(data);
-          } else {
-            // An error occurred.
-            throw "An error occurred making request to " + url;
-            return false;
           }
+          callback(data);
         }
       };
 
@@ -242,8 +238,8 @@ var GitHubActivity = (function() {
     }
 
     methods.getOutputFromRequest(userUrl, function(data) {
-      output += methods.getHeaderHTML(data);
-      if (output) {
+      if (data) {
+        output += methods.getHeaderHTML(data);
         // User was found.
         var limit = options.limit != 'undefined' ? parseInt(options.limit, 10) : null;
         methods.getOutputFromRequest(eventsUrl, function(data) {
