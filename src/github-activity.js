@@ -228,6 +228,10 @@ var GitHubActivity = (function() {
       eventsUrl += authString;
     }
 
+    if (!!options.eventsUrl){
+      eventsUrl = options.eventsUrl;
+    }
+
     // Allow templates override
     if (typeof options.templates == 'object') {
       for (var template in templates) {
