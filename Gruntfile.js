@@ -2,7 +2,7 @@ var config = {
   dist: 'dist',
   bower: 'bower_components',
   src: 'src',
-  banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - Copyright 2014 <%= pkg.author %> */\n'
+  banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - Copyright 2015 <%= pkg.author %> */\n'
 };
 
 var pkg = require('./package.json');

@@ -2,7 +2,7 @@
  * GitHub Activity Stream - v0.1.0 - 7/28/2014
  * https://github.com/caseyscarborough/github-activity
  *
- * Copyright (c) 2014 Casey Scarborough
+ * Copyright (c) 2015 Casey Scarborough
  * MIT License
  * http://opensource.org/licenses/MIT
  */
