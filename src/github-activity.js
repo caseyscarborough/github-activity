@@ -177,6 +177,7 @@ var GitHubActivity = (function() {
     getOutputFromRequest: function(url, func) {
       var text, data, request = new XMLHttpRequest();
       request.open('GET', url, false);
+      request.setRequestHeader('Accept', 'application/vnd.github.v3+json');
 
       request.onload = function() {
         if (request.status >= 200 && request.status < 400){
