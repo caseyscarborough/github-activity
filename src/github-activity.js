@@ -78,7 +78,7 @@ var GitHubActivity = (function() {
       // Retrieve the pull request link if this is a PullRequestEvent.
       if (p.pull_request) {
         var pr = p.pull_request;
-        data.pullRequestLink = methods.renderLink(p.html_url, data.repo.name + "#" + pr.number);
+        data.pullRequestLink = methods.renderLink(pr.html_url, data.repo.name + "#" + pr.number);
         data.mergeMessage = "";
 
         // If this was a merge, set the merge message.
