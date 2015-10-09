@@ -175,20 +175,22 @@ var GitHubActivity = (function() {
       return text;
     },
     getOutputFromRequest: function(url, callback) {
-      var text, data, request = new XMLHttpRequest();
-      request.open('GET', url, true);
+      var request = new XMLHttpRequest();
+      request.open('GET', url);
       request.setRequestHeader('Accept', 'application/vnd.github.v3+json');
 
-      request.onload = function(e) {
+      request.onreadystatechange = function() {
         if (request.readyState === 4) {
-          if (request.status >= 200 && request.status < 400){
-            data = JSON.parse(request.responseText);
+          if (request.status >= 200 && request.status < 300){
+            var data = JSON.parse(request.responseText);
+            callback(undefined, data);
+          } else {
+            callback('request for ' + url + ' yielded status ' + request.status);
           }
-          callback(data);
         }
       };
 
-      request.onerror = function() { console.log('An error occurred connecting to the url.'); };
+      request.onerror = function() { callback('An error occurred connecting to ' + url); };
       request.send();
     },
     renderStream: function(output, div) {
@@ -204,6 +206,11 @@ var GitHubActivity = (function() {
       } else {
         methods.renderStream(content, div);
       }
+    },
+    renderIfReady: function(selector, header, activity) {
+      if (header && activity) {
+        methods.writeOutput(selector, header + activity);
+      }
     }
   };
 
@@ -216,7 +223,8 @@ var GitHubActivity = (function() {
     var selector = options.selector,
         userUrl   = 'https://api.github.com/users/' + options.username,
         eventsUrl = userUrl + '/events',
-        output = "";
+        header,
+        activity;
 
     if (!!options.repository){
       eventsUrl = 'https://api.github.com/repos/' + options.username + '/' + options.repository + '/events';
@@ -241,19 +249,23 @@ var GitHubActivity = (function() {
       }
     }
 
-    methods.getOutputFromRequest(userUrl, function(data) {
-      if (data) {
-        output += methods.getHeaderHTML(data);
-        // User was found.
-        var limit = options.limit != 'undefined' ? parseInt(options.limit, 10) : null;
-        methods.getOutputFromRequest(eventsUrl, function(data) {
-          output += methods.getActivityHTML(data, limit);
-          methods.writeOutput(selector, output);
-        });
+    methods.getOutputFromRequest(userUrl, function(error, output) {
+      if (error) {
+        header = Mustache.render(templates.UserNotFound, { username: options.username });
       } else {
-        output = Mustache.render(templates.NotFound, { username: options.username });
-        methods.writeOutput(selector, output);
+        header = methods.getHeaderHTML(output)
       }
+      methods.renderIfReady(selector, header, activity)
+    });
+
+    methods.getOutputFromRequest(eventsUrl, function(error, output) {
+      if (error) {
+        activity = Mustache.render(templates.EventsNotFound, { username: options.username });
+      } else {
+        var limit = options.limit != 'undefined' ? parseInt(options.limit, 10) : null;
+        activity = methods.getActivityHTML(output, limit);
+      }
+      methods.renderIfReady(selector, header, activity);
     });
   };
 
@@ -321,7 +333,8 @@ var templates = {
                </div><div class="gha-push"></div>',
   Footer: '<div class="gha-footer">Public Activity <a href="https://github.com/caseyscarborough/github-activity" target="_blank">GitHub Activity Stream</a>',
   NoActivity: '<div class="gha-info">This user does not have any public activity yet.</div>',
-  NotFound: '<div class="gha-info">User {{username}} wasn\'t found.</div>',
+  UserNotFound: '<div class="gha-info">User {{username}} wasn\'t found.</div>',
+  EventsNotFound: '<div class="gha-info">Events for user {{username}} not found.</div>',
   CommitCommentEvent: 'commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
   CreateEvent: 'created {{payload.ref_type}} {{{branchLink}}}{{{repoLink}}}',
   DeleteEvent: 'deleted {{payload.ref_type}} {{payload.ref}} at {{{repoLink}}}',
