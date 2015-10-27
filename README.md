@@ -6,7 +6,7 @@ A sample image of the activity stream is shown below:
 
 ![](https://raw.githubusercontent.com/caseyscarborough/github-activity/gh-pages/images/matz.png)
 
-### Dependencies
+## Dependencies
 
 The two dependencies for the plugin are the [Mustache](https://github.com/janl/mustache.js/) templating library and [Octicons](https://octicons.github.com/) (if you want the icons to show). You can include these along with the scripts for the plugin in the head of your page with the following HTML:
 
@@ -18,7 +18,7 @@ The two dependencies for the plugin are the [Mustache](https://github.com/janl/m
 <script type="text/javascript" src="github-activity-0.1.3.min.js"></script>
 ```
 
-The files can be downloaded from the [dist](https://github.com/caseyscarborough/github-activity/tree/master/dist) directory.
+The files can be downloaded from the [releases page](https://github.com/caseyscarborough/github-activity/releases).
 
 If you'd like to build the files yourself:
 
