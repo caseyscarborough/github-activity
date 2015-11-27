@@ -1,5 +1,5 @@
 /*!
- * GitHub Activity Stream - v0.1.3 - 10/7/2015
+ * GitHub Activity Stream - v0.1.4 - 10/7/2015
  * https://github.com/caseyscarborough/github-activity
  *
  * Copyright (c) 2015 Casey Scarborough
