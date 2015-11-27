@@ -1,4 +1,13 @@
-.gha-feed {
+/*!
+ * GitHub Activity Stream - v0.1.4 - 10/7/2015
+ * https://github.com/caseyscarborough/github-activity
+ *
+ * Copyright (c) 2015 Casey Scarborough
+ * MIT License
+ * http://opensource.org/licenses/MIT
+ */
+
+ .gha-feed {
   width: 100%;
   height: 100%;
   background: #fff;
