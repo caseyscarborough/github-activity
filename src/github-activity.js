@@ -323,7 +323,7 @@ var templates = {
              </div>',
   SingleLineActivity: '<div class="gha-activity gha-small">\
                          <div class="gha-activity-icon"><span class="octicon octicon-{{icon}}"></span></div>\
-                         <div class="gha-message">{{{userLink}}} {{{message}}}</div><div class="gha-time">{{{timeString}}}</div>\
+                         <div class="gha-message"><div class="gha-time">{{{timeString}}}</div>{{{userLink}}} {{{message}}}</div>\
                          <div class="gha-clear"></div>\
                        </div>',
   UserHeader: '<div class="gha-header">\

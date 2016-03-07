@@ -159,7 +159,6 @@ span.gha-time {
 
 
 .gha-activity.gha-small {
-  margin-top: 5px;
   font-weight: normal;
   font-size: 13px;
 }
@@ -168,20 +167,8 @@ span.gha-time {
   font-weight: normal;
 }
 
-.gha-activity.gha-small .gha-message {
-  float: left;
-  width: auto;
-  margin-right: 5px;
-  margin-top: 5px;
-}
-
 .gha-activity.gha-small span {
   font-size: 16px;
-}
-
-.gha-activity.gha-small .gha-time {
-  float: left;
-  margin-top: 6px;
 }
 
 .gha-activity:last-child {
