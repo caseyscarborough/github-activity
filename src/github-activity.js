@@ -222,13 +222,13 @@ var GitHubActivity = (function() {
 
     var baseUrl = options.baseUrl || 'https://api.github.com/users/';
     var selector = options.selector,
-        userUrl   = baseUrl + options.username,
+        userUrl   = 'https://api.github.com/users/' + options.username,
         eventsUrl = userUrl + '/events',
         header,
         activity;
 
     if (!!options.repository){
-      eventsUrl = baseUrl + options.username + '/' + options.repository + '/events';
+      eventsUrl = 'https://api.github.com/repos/' + options.username + '/' + options.repository + '/events';
     }
 
     if (options.clientId && options.clientSecret) {
@@ -239,6 +239,10 @@ var GitHubActivity = (function() {
 
     if (!!options.eventsUrl){
       eventsUrl = options.eventsUrl;
+    }
+
+    if (!!options.userUrl){
+      userUrl = options.userUrl;
     }
 
     // Allow templates override
