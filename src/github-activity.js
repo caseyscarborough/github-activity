@@ -220,14 +220,15 @@ var GitHubActivity = (function() {
       return false;
     }
 
+    var baseUrl = options.baseUrl || 'https://api.github.com/users/';
     var selector = options.selector,
-        userUrl   = 'https://api.github.com/users/' + options.username,
+        userUrl   = baseUrl + options.username,
         eventsUrl = userUrl + '/events',
         header,
         activity;
 
     if (!!options.repository){
-      eventsUrl = 'https://api.github.com/repos/' + options.username + '/' + options.repository + '/events';
+      eventsUrl = baseUrl + options.username + '/' + options.repository + '/events';
     }
 
     if (options.clientId && options.clientSecret) {
