@@ -353,7 +353,6 @@ var templates = {
   WatchEvent: 'starred {{{repoLink}}}'
 },
 
-
 icons = {
   CommitCommentEvent: 'comment-discussion',
   CreateEvent_repository: 'repo-create',
