@@ -1,11 +1,11 @@
 /*!
-* GitHub Activity Stream - v0.1.4 - 10/7/2015
-* https://github.com/caseyscarborough/github-activity
-*
-* Copyright (c) 2015 Casey Scarborough
-* MIT License
-* http://opensource.org/licenses/MIT
-*/
+ * GitHub Activity Stream - v0.1.4 - 10/7/2015
+ * https://github.com/caseyscarborough/github-activity
+ *
+ * Copyright (c) 2015 Casey Scarborough
+ * MIT License
+ * http://opensource.org/licenses/MIT
+ */
 
 var GitHubActivity = (function() {
   'use strict';
@@ -222,10 +222,10 @@ var GitHubActivity = (function() {
 
     var baseUrl = options.baseUrl || 'https://api.github.com/users/';
     var selector = options.selector,
-    userUrl   = baseUrl + options.username,
-    eventsUrl = userUrl + '/events',
-    header,
-    activity;
+        userUrl   = baseUrl + options.username,
+        eventsUrl = userUrl + '/events',
+        header,
+        activity;
 
     if (!!options.repository){
       eventsUrl = baseUrl + options.username + '/' + options.repository + '/events';
