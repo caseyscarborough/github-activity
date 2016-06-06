@@ -220,7 +220,6 @@ var GitHubActivity = (function() {
       return false;
     }
 
-    var baseUrl = options.baseUrl || 'https://api.github.com/users/';
     var selector = options.selector,
         userUrl   = 'https://api.github.com/users/' + options.username,
         eventsUrl = userUrl + '/events',
