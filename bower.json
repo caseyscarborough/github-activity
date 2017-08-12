@@ -1,7 +1,7 @@
 {
   "name": "GitHub Activity Stream",
   "main": "github-activity.js",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "homepage": "https://github.com/caseyscarborough/github-activity",
   "authors": [
     "Casey Scarborough <caseyscarborough@gmail.com>"

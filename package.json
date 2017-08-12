@@ -1,6 +1,6 @@
 {
   "name": "github-activity",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A widget for displaying GitHub activity for a user.",
   "main": "Gruntfile.js",
   "devDependencies": {
