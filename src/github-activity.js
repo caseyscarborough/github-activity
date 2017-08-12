@@ -92,7 +92,7 @@ var GitHubActivity = (function() {
       // Get the link if this is a PullRequestReviewCommentEvent
       if (p.comment && p.comment.pull_request_url) {
         var title = data.repo.name + "#" + p.comment.pull_request_url.split('/').pop();
-        data.pullRequestLink = methods.renderGitHubLink(p.comment.pull_request_url, title);
+        data.pullRequestLink = methods.renderLink(p.comment.html_url, title);
       }
 
       // Get the comment if one exists, and trim it to 150 characters.
