@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/caseyscarborough/github-activity",
   "dependencies": {
-    "mustache": "^0.7.3",
+    "mustache": "^2.2.1",
     "octicons": "^2.4.1"
   },
   "files": [
