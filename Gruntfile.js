@@ -1,6 +1,6 @@
 var config = {
   dist: 'dist',
-  bower: 'bower_components',
+  node_modules: 'node_modules',
   src: 'src',
   banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - Copyright 2015 <%= pkg.author %> */\n'
 };
@@ -15,25 +15,25 @@ module.exports = function(grunt) {
       dist: {
         files: [{
             expand: true,
-            cwd: '<%= config.bower %>/octicons/octicons',
+            cwd: '<%= config.node_modules %>/octicons/octicons',
             src: 'octicons.ttf',
             dest: '<%= config.dist %>/octicons'
           },
           {
             expand: true,
-            cwd: '<%= config.bower %>/octicons/octicons',
+            cwd: '<%= config.node_modules %>/octicons/octicons',
             src: 'octicons.woff',
             dest: '<%= config.dist %>/octicons'
           },
           {
             expand: true,
-            cwd: '<%= config.bower %>/octicons/octicons',
+            cwd: '<%= config.node_modules %>/octicons/octicons',
             src: 'octicons.eot',
             dest: '<%= config.dist %>/octicons'
           },
           {
             expand: true,
-            cwd: '<%= config.bower %>/octicons/octicons',
+            cwd: '<%= config.node_modules %>/octicons/octicons',
             src: 'octicons.svg',
             dest: '<%= config.dist %>/octicons'
           }
@@ -50,7 +50,7 @@ module.exports = function(grunt) {
             '<%= config.src %>/github-activity.css'
           ],
           '<%= config.dist %>/octicons/octicons.min.css': [
-            '<%= config.bower %>/octicons/octicons/octicons.css'
+            '<%= config.node_modules %>/octicons/octicons/octicons.css'
           ]
         }
       }
@@ -65,7 +65,7 @@ module.exports = function(grunt) {
             '<%= config.src %>/github-activity.js'
           ],
           '<%= config.dist %>/mustache/mustache.min.js': [
-            '<%= config.bower %>/mustache/mustache.js'
+            '<%= config.node_modules %>/mustache/mustache.js'
           ]
         }
       }
