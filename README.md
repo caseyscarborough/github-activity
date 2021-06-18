@@ -43,20 +43,11 @@ Add the files to your webpage:
 If you'd like to build the files yourself:
 
 ```bash
-# Ensure you have grunt and bower installed
-npm install -g bower
-npm install -g grunt-cli
-
-# Clone the repository
-git clone https://github.com/caseyscarborough/github-activity.git
-cd github-activity
-
 # Install dependencies
-bower install
 npm install
 
 # Build dist
-grunt
+npx grunt
 ```
 
 ## Usage
