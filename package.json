@@ -4,11 +4,11 @@
   "description": "A widget for displaying GitHub activity for a user.",
   "main": "Gruntfile.js",
   "devDependencies": {
-    "grunt": "~0.4.5",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "~0.6.0",
     "grunt-contrib-copy": "~0.5.0",
-    "grunt-contrib-uglify": "~0.5.1",
     "grunt-contrib-cssmin": "~0.10.0",
-    "grunt-contrib-clean": "~0.6.0"
+    "grunt-contrib-uglify": "~0.5.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,5 +25,9 @@
   "bugs": {
     "url": "https://github.com/caseyscarborough/github-activity/issues"
   },
-  "homepage": "https://github.com/caseyscarborough/github-activity"
+  "homepage": "https://github.com/caseyscarborough/github-activity",
+  "dependencies": {
+    "bower": "^1.8.12",
+    "grunt-cli": "^1.4.3"
+  }
 }

@@ -24,8 +24,8 @@ If you'd like to build the files yourself:
 
 ```bash
 # Ensure you have grunt and bower installed
-npm install bower
-npm install grunt-cli
+npm install -g bower
+npm install -g grunt-cli
 
 # Clone the repository
 git clone https://github.com/caseyscarborough/github-activity.git
@@ -33,6 +33,7 @@ cd github-activity
 
 # Install dependencies
 bower install
+npm install
 
 # Build dist
 grunt
@@ -50,10 +51,10 @@ Then call the feed method via Javascript:
 
 ```js
 GitHubActivity.feed({
-	username: "your-username",
-	repository: "your-repo", // optional
-	selector: "#feed",
-	limit: 20 // optional
+  username: "your-username",
+  repository: "your-repo", // optional
+  selector: "#feed",
+  limit: 20 // optional
 });
 ```
 
