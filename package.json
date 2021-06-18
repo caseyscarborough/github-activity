@@ -33,7 +33,7 @@
     "octicons": "^2.4.1"
   },
   "files": [
-    "dist",
+    "dist/github-activity*",
     "*.md",
     "src"
   ]
