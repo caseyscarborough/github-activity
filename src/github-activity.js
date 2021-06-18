@@ -83,9 +83,21 @@ var GitHubActivity = (function() {
 
         // If this was a merge, set the merge message.
         if (p.pull_request.merged) {
-          p.action = "merged";
+          data.eventType = "merged";
           var message = '{{c}} ' + pluralize('commit', pr.commits) + ' with {{a}} ' + pluralize('addition', pr.additions) + ' and {{d}} ' + pluralize('deletion', pr.deletions);
           data.mergeMessage = Mustache.render('<br><small class="gha-message-merge">' + message + '</small>', { c: pr.commits, a: pr.additions, d: pr.deletions });
+        } else {
+          data.eventType = "closed";
+        }
+
+        if (data.type === 'PullRequestReviewEvent') {
+          if (p.review.state === "commented") {
+            data.eventType = "commented on";
+          } else if (p.review.state === "changes_requested") {
+            data.eventType = "requested changes on";
+          } else if (p.review.state === "approved") {
+            data.pullRequestEventType = "approved";
+          }
         }
       }
 
@@ -136,6 +148,8 @@ var GitHubActivity = (function() {
       if (data.type == 'CreateEvent' && (['repository', 'branch', 'tag'].indexOf(p.ref_type) >= 0)) {
         // Display separate icons depending on type of create event.
         icon = icons[data.type + '_' + p.ref_type];
+      } else if (data.type === 'PullRequestReviewEvent') {
+        icon = icons[data.type + '_' + p.review.state];
       } else {
         icon = icons[data.type]
       }
@@ -346,7 +360,8 @@ var templates = {
   IssuesEvent: '{{payload.action}} issue {{{issueLink}}}<br>{{{userGravatar}}}<small>{{payload.issue.title}}</small>',
   MemberEvent: 'added {{{memberLink}}} to {{{repoLink}}}',
   PublicEvent: 'open sourced {{{repoLink}}}',
-  PullRequestEvent: '{{payload.action}} pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{payload.pull_request.title}}</small>{{{mergeMessage}}}',
+  PullRequestEvent: '{{eventType}} pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{payload.pull_request.title}}</small>{{{mergeMessage}}}',
+  PullRequestReviewEvent: '{{eventType}} pull request {{{pullRequestLink}}}.<br>{{{userGravatar}}}<small>{{payload.review.body}}</small>',
   PullRequestReviewCommentEvent: 'commented on pull request {{{pullRequestLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
   PushEvent: 'pushed to {{{branchLink}}}{{{repoLink}}}<br>\
                 <ul class="gha-commits">{{#payload.commits}}<li><small>{{{committerGravatar}}} {{{shaLink}}} {{message}}</small></li>{{/payload.commits}}</ul>\
@@ -370,6 +385,9 @@ icons = {
   MemberEvent: 'person',
   PublicEvent: 'globe',
   PullRequestEvent: 'git-pull-request',
+  PullRequestReviewEvent_approved: 'check',
+  PullRequestReviewEvent_commented: 'comment-discussion',
+  PullRequestReviewEvent_changes_requested: 'alert',
   PullRequestReviewCommentEvent: 'comment-discussion',
   PushEvent: 'git-commit',
   ReleaseEvent: 'tag-add',
