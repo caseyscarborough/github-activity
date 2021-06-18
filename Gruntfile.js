@@ -46,7 +46,7 @@ module.exports = function(grunt) {
           banner: config.banner
         },
         files: {
-          '<%= config.dist %>/github-activity-<%= pkg.version %>.min.css': [
+          '<%= config.dist %>/github-activity.min.css': [
             '<%= config.src %>/github-activity.css'
           ],
           '<%= config.dist %>/octicons/octicons.min.css': [
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          '<%= config.dist %>/github-activity-<%= pkg.version %>.min.js': [
+          '<%= config.dist %>/github-activity.min.js': [
             '<%= config.src %>/github-activity.js'
           ],
           '<%= config.dist %>/mustache/mustache.min.js': [

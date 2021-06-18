@@ -1,6 +1,6 @@
 {
   "name": "github-activity-feed",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A widget for displaying GitHub activity for a user.",
   "main": "Gruntfile.js",
   "devDependencies": {
@@ -9,7 +9,8 @@
     "grunt-contrib-clean": "~0.6.0",
     "grunt-contrib-copy": "~0.5.0",
     "grunt-contrib-cssmin": "~0.10.0",
-    "grunt-contrib-uglify": "~0.5.1"
+    "grunt-contrib-uglify": "~0.5.1",
+    "jquery": "^3.6.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -28,7 +29,6 @@
   },
   "homepage": "https://github.com/caseyscarborough/github-activity",
   "dependencies": {
-    "jquery": "^1.12.4",
     "mustache": "^0.7.3",
     "octicons": "^2.4.1"
   },
