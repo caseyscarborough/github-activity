@@ -1,5 +1,5 @@
 {
-  "name": "github-activity",
+  "name": "github-activity-feed",
   "version": "0.1.6",
   "description": "A widget for displaying GitHub activity for a user.",
   "main": "Gruntfile.js",
