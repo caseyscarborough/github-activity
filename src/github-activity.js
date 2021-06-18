@@ -332,7 +332,7 @@ var templates = {
                  <div class="gha-gravatar">{{{gravatarLink}}}</div>\
                </div><div class="gha-push"></div>',
   Footer: '<div class="gha-footer">Public Activity <a href="https://github.com/caseyscarborough/github-activity" target="_blank">GitHub Activity Stream</a>',
-  NoActivity: '<div class="gha-info">This user does not have any public activity yet.</div>',
+  NoActivity: '<div class="gha-info">This user does not have any recent public activity.</div>',
   UserNotFound: '<div class="gha-info">User {{username}} wasn\'t found.</div>',
   EventsNotFound: '<div class="gha-info">Events for user {{username}} not found.</div>',
   CommitCommentEvent: 'commented on commit {{{commentLink}}}<br>{{{userGravatar}}}<small>{{comment}}</small>',
