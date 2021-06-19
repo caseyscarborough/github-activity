@@ -2,9 +2,13 @@
 
 This is a small Javascript plugin that creates a stream of your recent GitHub activity. It displays the user's name, username, photo, and a list of each individual activity type. Click [here](https://caseyscarborough.github.io/github-activity) for a demo.
 
-A sample image of the activity stream is shown below:
+### Light Theme
 
-![](https://raw.githubusercontent.com/caseyscarborough/github-activity/gh-pages/images/matz.png)
+![](https://raw.githubusercontent.com/caseyscarborough/github-activity/gh-pages/images/light.png)
+
+### Dark Theme
+
+![](https://raw.githubusercontent.com/caseyscarborough/github-activity/gh-pages/images/dark.png)
 
 ## Dependencies
 
@@ -13,11 +17,14 @@ The two dependencies for the plugin are the [Mustache](https://github.com/janl/m
 ### Using CDN
 
 ```html
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/octicons@4.4.0/build/font/octicons.css">
 <link rel="stylesheet" href="https://unpkg.com/github-activity-feed@latest/dist/github-activity.min.css">
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/mustache@4.2.0/mustache.min.js"></script>
 <script type="text/javascript" src="https://unpkg.com/github-activity-feed@latest/dist/github-activity.min.js"></script>
+
+<!-- if using dark theme add this in addition to the main CSS file -->
+<link rel="stylesheet" href="https://unpkg.com/github-activity-feed@latest/dist/github-activity.dark.min.css">
 ```
 
 ### Using npm
