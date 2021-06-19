@@ -29,8 +29,8 @@
   },
   "homepage": "https://github.com/caseyscarborough/github-activity",
   "dependencies": {
-    "mustache": "^0.7.3",
-    "octicons": "^2.4.1"
+    "mustache": "^4.2.0",
+    "octicons": "^4.4.0"
   },
   "files": [
     "dist/github-activity*",

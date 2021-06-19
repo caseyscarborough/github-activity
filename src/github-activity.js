@@ -331,7 +331,7 @@ function md5cycle(f,h){var g=f[0],e=f[1],j=f[2],i=f[3];g=ff(g,e,j,i,h[0],7,-6808
 var templates = {
   Stream: '<div class="gha-feed">{{{text}}}<div class="gha-push-small"></div>{{{footer}}}</div>',
   Activity: '<div id="{{id}}" class="gha-activity">\
-               <div class="gha-activity-icon"><span class="octicon octicon-{{icon}}"></span></div>\
+               <div class="gha-activity-icon"><span class="octicon mega-octicon octicon-{{icon}}"></span></div>\
                <div class="gha-message"><div class="gha-time">{{{timeString}}}</div>{{{userLink}}} {{{message}}}</div>\
                <div class="gha-clear"></div>\
              </div>',
@@ -373,7 +373,7 @@ var templates = {
 icons = {
   CommitCommentEvent: 'comment-discussion',
   CreateEvent_repository: 'repo-create',
-  CreateEvent_tag: 'tag-add',
+  CreateEvent_tag: 'tag',
   CreateEvent_branch: 'git-branch-create',
   DeleteEvent: 'repo-delete',
   FollowEvent: 'person-follow',
@@ -390,7 +390,7 @@ icons = {
   PullRequestReviewEvent_changes_requested: 'alert',
   PullRequestReviewCommentEvent: 'comment-discussion',
   PushEvent: 'git-commit',
-  ReleaseEvent: 'tag-add',
+  ReleaseEvent: 'tag',
   WatchEvent: 'star'
 },
 
