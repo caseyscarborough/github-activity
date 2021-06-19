@@ -253,12 +253,6 @@ var GitHubActivity = (function() {
       eventsUrl = options.eventsUrl;
     }
 
-    if (options.clientId && options.clientSecret) {
-      var authString = '?client_id=' + options.clientId + '&client_secret=' + options.clientSecret;
-      userUrl   += authString;
-      eventsUrl += authString;
-    }
-
     // Allow templates override
     if (typeof options.templates == 'object') {
       for (var template in templates) {
