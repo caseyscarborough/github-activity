@@ -12,6 +12,8 @@ var GitHubActivity = (function() {
 
   var obj = {};
 
+  var config = {};
+
   var methods = {
     renderLink: function(url, title, cssClass) {
       if (!title) { title = url; }
@@ -168,7 +170,6 @@ var GitHubActivity = (function() {
       }
       data.userLink = methods.renderLink(data.html_url, data.login);
       data.gravatarLink = methods.renderLink(data.html_url, '<img src="' + data.avatar_url + '">');
-
       return Mustache.render(templates.UserHeader, data);
     },
     getActivityHTML: function(data, limit) {
@@ -192,6 +193,9 @@ var GitHubActivity = (function() {
       var request = new XMLHttpRequest();
       request.open('GET', url);
       request.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+      if (config.credentials && config.credentials.username && config.credentials.personalAccessToken) {
+        request.setRequestHeader('Authorization', 'Basic ' + btoa(config.credentials.username + ':' + config.credentials.personalAccessToken));
+      }
 
       request.onreadystatechange = function() {
         if (request.readyState === 4) {
@@ -229,6 +233,7 @@ var GitHubActivity = (function() {
   };
 
   obj.feed = function(options) {
+    config = options;
     if (!options.username || !options.selector) {
       throw "You must specify the username and selector options for the activity stream.";
       return false;
@@ -244,14 +249,14 @@ var GitHubActivity = (function() {
       eventsUrl = 'https://api.github.com/repos/' + options.username + '/' + options.repository + '/events';
     }
 
+    if (!!options.eventsUrl){
+      eventsUrl = options.eventsUrl;
+    }
+
     if (options.clientId && options.clientSecret) {
       var authString = '?client_id=' + options.clientId + '&client_secret=' + options.clientSecret;
       userUrl   += authString;
       eventsUrl += authString;
-    }
-
-    if (!!options.eventsUrl){
-      eventsUrl = options.eventsUrl;
     }
 
     // Allow templates override
