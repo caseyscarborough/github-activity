@@ -2,7 +2,7 @@ var config = {
   dist: 'dist',
   node_modules: 'node_modules',
   src: 'src',
-  banner: '/* Github Activity Stream - v<%= pkg.version %> \n * https://github.com/caseyscarborough/github-activity \n *\n * Copyright 2015-<%= grunt.template.today("yyyy") %> <%= pkg.author %> \n * MIT License\n */\n'
+  banner: '/* Github Activity Stream - v<%= pkg.version %> \n * https://github.com/hyeran930331/github-activity \n *\n * Copyright 2015-<%= grunt.template.today("yyyy") %> <%= pkg.author %> \n * MIT License\n */\n'
 };
 
 var pkg = require('./package.json');
