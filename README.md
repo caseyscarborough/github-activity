@@ -27,5 +27,5 @@ git bash 에서 명령어를 복붙 (하지만 이클립스에서 수행하는�
 4. Push to the branch (`git push origin my-new-feature`)
  (커밋 보내기)
 5. Create new Pull Request
- (그럼 완성!)
+ (그러고 origin 으로 설정하기!)
 </pre>
